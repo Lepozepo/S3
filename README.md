@@ -35,8 +35,8 @@ Create a callback function that will handle what to do with the generated URL. S
 
 ``` javascript
 Meteor.methods({
-	callbackFunction:function(url){
-		console.log(url);
+	callbackFunction:function(url,context){
+		console.log('Add '+url+' to the id of '+context);
 	}
 });
 ```
