@@ -2,10 +2,12 @@ var Knox = Npm.require("knox");
 var Future = Npm.require('fibers/future');
 
 var knox;
+var S3;
 
 Meteor.methods({
 	S3config:function(obj){
 		knox = Knox.createClient(obj);
+		S3 = {path:obj.path};
 	},
 	S3upload:function(file,callback){
 		var future = new Future();
@@ -17,7 +19,7 @@ Meteor.methods({
 
 		knox.putBuffer(buffer,"/"+file.name,{"Content-Type":file.type,"Content-Length":buffer.length},function(e,r){
 			if(!e){
-				var path = "https://s3.amazonaws.com/retrosoda/"+file.name;
+				var path = S3.path+file.name;
 				future.return(path);
 			} else {
 				console.log(e);
