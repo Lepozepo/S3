@@ -16,7 +16,8 @@ Define your Amazon S3 credentials. SERVER SIDE.
 Meteor.call("S3config",{
 	key: 'amazonKey',
 	secret: 'amazonSecret',
-	bucket: 'bucketName'
+	bucket: 'bucketName',
+	directory: '/subfolder/' //This is optional, defaults to root
 });
 ```
 
