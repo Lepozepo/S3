@@ -30,6 +30,9 @@ Handlebars.registerHelper('S3', function (options) {
 				reader.readAsArrayBuffer(file);
 
 			});
+		},
+		"click .tester":function(e){
+			console.log("clicked");
 		}
 	},html);
 

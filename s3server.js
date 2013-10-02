@@ -30,28 +30,5 @@ Meteor.methods({
 			var url = knox.http(future.wait());
 			Meteor.call(callback,url,context);
 		}
-	},
-	S3replace:function(fileToReplace,file,context,callback){
-		var future = new Future();
-
-		var extension = (file.name).match(/\.[0-9a-z]{1,5}$/i);
-		file.name = Meteor.uuid()+extension;
-		var path = S3.directory+file.name;
-
-		var buffer = new Buffer(file.data);
-
-		knox.putBuffer(buffer,path,{"Content-Type":file.type,"Content-Length":buffer.length},function(e,r){
-			if(!e){
-				future.return(path);
-				knox.deleteFile(fileToReplace);
-			} else {
-				console.log(e);
-			}
-		});
-
-		if(future.wait() && callback){
-			var url = knox.http(future.wait());
-			Meteor.call(callback,url,context);
-		}
 	}
 });
