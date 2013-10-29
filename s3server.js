@@ -1,4 +1,4 @@
-var Knox = Npm.require("knox");
+Knox = Npm.require("knox");
 var Future = Npm.require('fibers/future');
 
 var knox;
