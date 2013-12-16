@@ -13,7 +13,7 @@ Handlebars.registerHelper('S3', function (options) {
 
 	html = Spark.attachEvents({
 		'change input[type=file]': function (e) {
-			var files = event.currentTarget.files;
+			var files = e.currentTarget.files;
 			_.each(files,function(file){
 				var reader = new FileReader;
 				var fileData = {
