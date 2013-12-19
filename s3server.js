@@ -30,5 +30,14 @@ Meteor.methods({
 			var url = knox.http(future.wait());
 			Meteor.call(callback,url,context);
 		}
+	},
+	S3delete:function(path, callback){
+		knox.deleteFile(path, function(e,r) {
+			if(e){
+				console.log(e);
+			}	else if(callback){
+				Meteor.call(callback);
+			}
+		});
 	}
 });
