@@ -25,6 +25,7 @@ Handlebars.registerHelper('S3', function (options) {
 				reader.onload = function () {
 					fileData.data = new Uint8Array(reader.result);
 					Meteor.call("S3upload",fileData,context,callback);
+					return url;
 				};
 
 				reader.readAsArrayBuffer(file);
