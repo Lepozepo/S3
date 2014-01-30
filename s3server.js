@@ -29,6 +29,7 @@ Meteor.methods({
 		if(future.wait() && callback){
 			var url = knox.http(future.wait());
 			Meteor.call(callback,url,context);
+			return url;
 		}
 	},
 	S3delete:function(path, callback){
