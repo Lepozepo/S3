@@ -1,0 +1,13 @@
+<head>
+  <title>basic</title>
+</head>
+
+<body>
+  {{> basic}}
+</body>
+
+<template name="basic">
+	{{#S3 callback="save_url"}}
+		<input type="file">
+	{{/S3}}
+</template>

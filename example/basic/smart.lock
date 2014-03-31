@@ -1,0 +1,15 @@
+{
+  "meteor": {},
+  "dependencies": {
+    "basePackages": {
+      "s3": {
+        "path": "../.."
+      }
+    },
+    "packages": {
+      "s3": {
+        "path": "../.."
+      }
+    }
+  }
+}
