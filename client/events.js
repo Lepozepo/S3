@@ -1,6 +1,6 @@
 Template.S3.events({
 	'change input[type=file]': function (e,helper) {
-		var context = this;
+		var context = this || {};
 
 		if(helper.data && _.has(helper.data,"callback")){
 			var callback = helper.data.callback;
