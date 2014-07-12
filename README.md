@@ -13,12 +13,12 @@ $ mrt add s3
 Define your Amazon S3 credentials. SERVER SIDE.
 
 ``` javascript
-Meteor.call("S3config",{
+S3.config = {
 	key: 'amazonKey',
 	secret: 'amazonSecret',
 	bucket: 'bucketName',
 	directory: '/subfolder/' //This is optional, defaults to root
-});
+};
 ```
 
 ### Step 2
