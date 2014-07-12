@@ -2,19 +2,20 @@ Knox = Npm.require("knox");
 var Future = Npm.require('fibers/future');
 
 var knox;
-var S3;
+S3 = {};
+S3.config = {directory:"/"};
+
+Meteor.startup(function(){
+	knox = Knox.createClient(S3.config);
+});
 
 Meteor.methods({
-	S3config:function(obj){
-		knox = Knox.createClient(obj);
-		S3 = {directory:obj.directory || "/"};
-	},
 	S3upload:function(file,context,callback){
 		var future = new Future();
 
 		var extension = (file.name).match(/\.[0-9a-z]{1,5}$/i);
 		file.name = Meteor.uuid()+extension;
-		var path = S3.directory+file.name;
+		var path = S3.config.directory+file.name;
 
 		var buffer = new Buffer(file.data);
 
