@@ -2,13 +2,13 @@
   "meteor": {},
   "dependencies": {
     "basePackages": {
-      "s3": {
-        "path": "../.."
-      }
+      "s3": {}
     },
     "packages": {
       "s3": {
-        "path": "../.."
+        "git": "https://github.com/Lepozepo/S3.git",
+        "tag": "v2.0.1",
+        "commit": "676176a255e1f161f0ff190a5603f505e988545f"
       }
     }
   }
