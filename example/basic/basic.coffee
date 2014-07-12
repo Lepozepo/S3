@@ -6,7 +6,7 @@ if Meteor.isClient
 
 
 if Meteor.isServer
-	Meteor.call "S3config",
+	S3.config =
 		key:"aws_key"
 		secret:"aws_secret"
 		bucket:"bucket"
