@@ -15,7 +15,7 @@ Meteor.methods({
 
 		var extension = (file.name).match(/\.[0-9a-z]{1,5}$/i);
 		file.name = Meteor.uuid()+extension;
-		var path = S3.config.directory+file.name;
+    var path = ( S3.config.directory === undefined || S3.config.directory === null) ? file.name : S3.config.directory+file.name;
 
 		var buffer = new Buffer(file.data);
 
