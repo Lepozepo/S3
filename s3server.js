@@ -6,6 +6,22 @@ S3 = {};
 S3.config = {directory:"/"};
 
 Meteor.startup(function(){
+	if(!_.has(S3.config,"key")) {
+		console.log("S3: AWS key is undefined");
+	}
+
+	if(!_.has(S3.config,"secret")) {
+		console.log("S3: AWS secret is undefined");
+	}
+
+	if(!_.has(S3.config,"bucket")) {
+		console.log("S3: AWS bucket is undefined");
+	}
+
+	if(!_.has(S3.config,"bucket") || !_.has(S3.config,"secret") || !_.has(S3.config,"key")) {
+		return;
+	}
+
 	knox = Knox.createClient(S3.config);
 });
 
