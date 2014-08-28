@@ -7,4 +7,5 @@ standard-app-packages
 autopublish
 insecure
 coffeescript
-s3
+lepozepo:s3
+
