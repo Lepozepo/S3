@@ -16,3 +16,5 @@ if Meteor.isServer
 		save_url: (url,context) ->
 			console.log url
 			console.log context
+
+
