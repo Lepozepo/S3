@@ -18,9 +18,16 @@ Template.S3.events({
 				type:file.type
 			};
 
+      Session.set('S3_uploading',true);
+      context.fileInfo =fileData;
+
 			reader.onload = function () {
 				fileData.data = new Uint8Array(reader.result);
-				Meteor.call("S3upload",fileData,context,callback);
+				Meteor.call("S3upload",fileData,context,callback,function(err, res){
+          Session.set('S3_uploading',false);
+        });
+
+
 			};
 
 			reader.readAsArrayBuffer(file);
