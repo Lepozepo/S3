@@ -9,10 +9,11 @@
 <template name="basic">
 
 	<input type="file" class="file_bag">
-	<button>upload it</button>
+	<button class="upload">upload it</button>
 
 	{{#each files}}
 		<p>{{percent_uploaded}}</p>
+		<button class="delete">Delete</button>
 	{{/each}}
 
 </template>

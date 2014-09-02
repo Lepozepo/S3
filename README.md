@@ -104,7 +104,7 @@ This is the meteor stream that is created between the server and the S3.collecti
 This is the upload function that manages all the dramatic things you need to do for something so essentially simple.
 
 Parameters:
-	files: Must be a FileList object. You can get this via jQuery via $("input[type='file']")[0].files
+	files: Must be a FileList object. You can get this via jQuery via $("input[type='file']")[0].files \n
 	path: Must be in this format ("/folder/other_folder"). So basically always start with "/" and never end with "/". This is required.
 	callback: A function that is run after the upload is complete returning an Error as the first parameter (if there is one), and a Result as the second.
 	Result: The returned value of the callback function if there is no error. It returns an object with these keys:

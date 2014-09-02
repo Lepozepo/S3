@@ -3,9 +3,14 @@ if Meteor.isClient
 		"files": -> S3.collection.find()
 
 	Template.basic.events
-		"click button": (event) ->
-			S3.upload $("input.file_bag")[0].files,"/tester",(result) ->
+		"click button.upload": (event) ->
+			S3.upload $("input.file_bag")[0].files,"/tester",(error,result) ->
 				console.log result
+
+		"click button.delete": (event) ->
+			S3.delete @relative_url, (error,res) ->
+				console.log error
+				console.log res
 
 if Meteor.isServer
 	S3.config =
