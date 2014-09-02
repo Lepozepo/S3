@@ -1,5 +1,5 @@
 # Amazon S3 Uploader
-__This package is no longer supporting meteor releases before 0.9.0.__ S3 provides a simple way for uploading files to the Amazon S3 service. This is useful for uploading images and files that you want accesible to the public. S3 is built on [Knox](https://github.com/LearnBoost/knox), a module that becomes available server-side after installing this package.
+__This package is no longer supporting meteor releases before 0.9.0.__ S3 provides a simple way for uploading files to the Amazon S3 service with a progress bar. This is useful for uploading images and files that you want accesible to the public. S3 is built on [Knox](https://github.com/LearnBoost/knox), a module that becomes available server-side after installing this package.
 
 If you want to keep using the older version of this package check it out using `meteor add lepozepo:s3@=3.0.1`
 
