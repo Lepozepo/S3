@@ -103,7 +103,7 @@ This is the meteor stream that is created between the server and the S3.collecti
 #### S3.upload(files,path,callback)
 This is the upload function that manages all the dramatic things you need to do for something so essentially simple.
 
-Parameters:
+__Parameters:__
 *	__files:__ Must be a FileList object. You can get this via jQuery via $("input[type='file']")[0].files
 *	__path:__ Must be in this format ("/folder/other_folder"). So basically always start with "/" and never end with "/". This is required.
 *	__callback:__ A function that is run after the upload is complete returning an Error as the first parameter (if there is one), and a Result as the second.
@@ -117,9 +117,9 @@ Parameters:
 #### S3.delete(path,callback)
 This function permanently destroys files located in your S3 bucket. It still needs more work for security in the form of allow/deny rules.
 
-Parameters:
-*	path: Must be in this format ("/folder/other_folder/file.extension"). So basically always start with "/" and never end with "/". This is required.
-*	callback: A function that is run after the upload is complete returning an Error as the first parameter (if there is one), and a Result as the second.
+__Parameters:__
+*	__path:__ Must be in this format ("/folder/other_folder/file.extension"). So basically always start with "/" and never end with "/". This is required.
+*	__callback:__ A function that is run after the upload is complete returning an Error as the first parameter (if there is one), and a Result as the second.
 
 ### S3 (SERVER SIDE)
 
