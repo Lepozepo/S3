@@ -26,6 +26,7 @@ Meteor.methods
 					uploading:false
 					url: S3.knox.http(path)
 					secure_url: S3.knox.https(path)
+					relative_url:path
 
 				S3.stream.emit("upload",emit,file.id)
 
@@ -57,7 +58,7 @@ Meteor.methods
 				console.log e
 				future.return e
 			else
-				future.return r
+				future.return true
 
 		future.wait()
 

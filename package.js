@@ -17,8 +17,6 @@ Package.on_use(function (api) {
 	api.use(["ui@1.0.0","templating@1.0.0","spacebars@1.0.0"], "client");
 
 	// Client
-	api.add_files("client/blocks.html", "client");
-	api.add_files("client/events.js", "client");
 	api.add_files("client/functions.coffee", "client");
 
 	// Server
