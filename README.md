@@ -112,7 +112,7 @@ __Parameters:__
 *	__Result:__ The returned value of the callback function if there is no error. It returns an object with these keys:
 	*	__total_uploaded:__ Integer (bytes)
 	*	__percent_uploaded:__ Integer (out of 100)
-	*	__uploading:__Boolean (false if done uploading)
+	*	__uploading:__ Boolean (false if done uploading)
 	*	__url:__ String (S3 hosted URL)
 	*	__secure_url:__ String (S3 hosted URL for https)
 
