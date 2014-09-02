@@ -104,15 +104,15 @@ This is the meteor stream that is created between the server and the S3.collecti
 This is the upload function that manages all the dramatic things you need to do for something so essentially simple.
 
 Parameters:
-*	files: Must be a FileList object. You can get this via jQuery via $("input[type='file']")[0].files
-*	path: Must be in this format ("/folder/other_folder"). So basically always start with "/" and never end with "/". This is required.
-*	callback: A function that is run after the upload is complete returning an Error as the first parameter (if there is one), and a Result as the second.
-*	Result: The returned value of the callback function if there is no error. It returns an object with these keys:
-	*	total_uploaded: Integer (bytes)
-	*	percent_uploaded: Integer (out of 100)
-	*	uploading:Boolean (false if done uploading)
-	*	url: String (S3 hosted URL)
-	*	secure_url: String (S3 hosted URL for https)
+*	__files:__ Must be a FileList object. You can get this via jQuery via $("input[type='file']")[0].files
+*	__path:__ Must be in this format ("/folder/other_folder"). So basically always start with "/" and never end with "/". This is required.
+*	__callback:__ A function that is run after the upload is complete returning an Error as the first parameter (if there is one), and a Result as the second.
+*	__Result:__ The returned value of the callback function if there is no error. It returns an object with these keys:
+	*	__total_uploaded:__ Integer (bytes)
+	*	__percent_uploaded:__ Integer (out of 100)
+	*	__uploading:__Boolean (false if done uploading)
+	*	__url:__ String (S3 hosted URL)
+	*	__secure_url:__ String (S3 hosted URL for https)
 
 #### S3.delete(path,callback)
 This function permanently destroys files located in your S3 bucket. It still needs more work for security in the form of allow/deny rules.
