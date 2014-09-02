@@ -16,8 +16,15 @@ S3 =
 					if err
 						S3.collection.remove file.id
 						console.log err
+						callback and callback(err)
 					else
-						callback && callback(res)
+						callback and callback(res)
 
 			reader.readAsArrayBuffer(file)
 
+	delete: (path,callback) ->
+		Meteor.call "_S3delete",path, (err,res) ->
+			if not err
+				callback and callback(res)
+			else
+				callback and callback(err)

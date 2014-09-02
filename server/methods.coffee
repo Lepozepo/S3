@@ -47,9 +47,21 @@ Meteor.methods
 
 		future.wait()
 
-	_S3delete: (path, callback) ->
+	_S3delete: (path) ->
+		@unblock()
+
+		future = new Future()
+
 		S3.knox.deleteFile path, (e,r) ->
 			if e
 				console.log e
-			else if callback
-				Meteor.call callback
+				future.return e
+			else
+				future.return r
+
+		future.wait()
+
+
+
+
+
