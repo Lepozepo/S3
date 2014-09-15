@@ -26,9 +26,9 @@ if Meteor.isClient
 
 if Meteor.isServer
 	S3.config =
-		key:"AKIAJCDFSDCLHFTLTUUQ"
-		secret:"W75yqLQ2pO3GhSZpKcAwSI7epW6vutycPG6K2HfS"
-		bucket:"lepozepo-s3-example"
+		key:"myKey"
+		secret:"mySecret"
+		bucket:"myBucket"
 
 getFiles = (event) ->
 	evt = (event.originalEvent || event)
