@@ -44,7 +44,7 @@ Template.s3_tester.events({
 	"click button.upload": function(){
 		var files = $("input.file_bag")[0].files
 		S3.upload(files,"/subfolder",function(e,r){
-			console.log(result);
+			console.log(r);
 		});
 	}
 })
