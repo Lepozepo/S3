@@ -21,6 +21,7 @@ if Meteor.isClient
 		"dropped #dropzone": (event) ->
 			console.log 'file dropped'
 			files = getFiles(event)
+
 			S3.upload files, "/tester", (err, res) ->
 				console.log res
 
@@ -29,6 +30,9 @@ if Meteor.isServer
 		key:"myKey"
 		secret:"mySecret"
 		bucket:"myBucket"
+		fileSize:
+			min: 490000
+			max: 500000
 
 getFiles = (event) ->
 	evt = (event.originalEvent || event)
