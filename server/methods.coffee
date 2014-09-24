@@ -3,9 +3,6 @@ stream_buffers = Npm.require "stream-buffers"
 
 Meteor.methods
 	_S3upload: (file,path) ->
-		@unblock()
-
-		buffer = new Buffer(file.data)
 		if _.has S3.config, "fileSize"
 			min = S3.config.fileSize.min || 0
 			max = S3.config.fileSize.max || 1000000000000 # maximum 1 terabyte
@@ -13,6 +10,10 @@ Meteor.methods
 				return new Meteor.Error 406, "file is too small";
 			if file.data.length > max
 				return new Meteor.Error 406, "file is too big";
+
+		@unblock()
+
+		buffer = new Buffer(file.data)
 		file_stream_buffer = new stream_buffers.ReadableStreamBuffer
 			frequency:10
 			chunkSize:2048
