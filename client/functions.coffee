@@ -17,7 +17,7 @@ S3 =
 		if not _.has file, "id"
 			#MULTIPART UPLOAD
 			if chunks > 1
-				Meteor.Error 500,"File is larger than 2MB","Large files are not yet supported"
+				throw new Meteor.Error 500,"File is larger than 2MB","Large files are not yet supported"
 				return
 
 				file.id = S3.collection.insert
