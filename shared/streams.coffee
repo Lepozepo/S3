@@ -1,6 +1,6 @@
 if Meteor.isClient
-	S3.stream.on "upload", (data,id) ->
-		S3.collection.update id,data
+	S3.stream.on "upload", (id,operation) ->
+		S3.collection.update id,operation
 
 if Meteor.isServer
 	S3.stream.permissions.read (user,event) ->

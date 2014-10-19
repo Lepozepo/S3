@@ -6,13 +6,12 @@ Package.describe({
 });
 
 Npm.depends({
-	knox: "0.8.5",
-	"stream-buffers":"0.2.5"
+	knox: "0.9.1",
+	"stream-buffers":"0.2.5",
+	"aws-sdk":"2.0.19"
 });
 
 Package.on_use(function (api) {
-	//Need service-configuration to use Meteor.method
-	// api.versionsFrom('METEOR-CORE@0.9.0-atm');
 	api.use(["underscore@1.0.0", "ejson@1.0.0","service-configuration@1.0.0","coffeescript@1.0.0","lepozepo:streams@0.2.0"], ["client", "server"]);
 	api.use(["ui@1.0.0","templating@1.0.0","spacebars@1.0.0"], "client");
 
