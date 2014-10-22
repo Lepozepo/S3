@@ -9,8 +9,10 @@ if Meteor.isClient
 
 		"click button.delete": (event) ->
 			S3.delete @relative_url, (error,res) ->
-				console.log error
-				console.log res
+				if not error
+					console.log res
+				else
+					console.log error
 
 if Meteor.isServer
 	S3.config =
