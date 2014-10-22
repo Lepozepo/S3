@@ -3,12 +3,9 @@ S3 =
 	stream: new Meteor.Stream("s3_stream")
 
 	upload: (files,path,callback) ->
+		results = []
 		_.each files, (file) ->
-			S3._upload_file file, path, (error, result) ->
-				if not error
-					console.log "Success uploading file"
-				else
-					console.log "Error uploading file"
+			S3._upload_file file, path, callback
 
 	_upload_file: (file,path,callback) ->
 		chunk_size = 1024 * 1024 * 2
