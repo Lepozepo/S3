@@ -108,6 +108,5 @@ S3 =
 		reader.readAsArrayBuffer chunk
 
 	delete: (path,callback) ->
-		Meteor.call "_S3delete", path, (err,res) ->
-			callback and callback(err,res)
+		Meteor.call "_S3delete", path, callback
 
