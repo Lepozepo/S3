@@ -6,9 +6,10 @@ Package.describe({
 });
 
 Npm.depends({
-	knox: "0.9.1",
+	"knox": "0.9.1",
 	"stream-buffers":"0.2.5",
-	"aws-sdk":"2.0.19"
+	"aws-sdk":"2.0.19",
+	"base64-string-s3":"0.0.1"
 });
 
 Package.on_use(function (api) {

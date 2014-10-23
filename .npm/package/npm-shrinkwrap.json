@@ -19,6 +19,60 @@
         }
       }
     },
+    "base64-string-s3": {
+      "version": "0.0.1",
+      "dependencies": {
+        "base64-stream": {
+          "version": "0.1.2",
+          "dependencies": {
+            "readable-stream": {
+              "version": "1.0.2"
+            }
+          }
+        },
+        "knox": {
+          "version": "0.8.10",
+          "dependencies": {
+            "mime": {
+              "version": "1.2.11"
+            },
+            "xml2js": {
+              "version": "0.2.8",
+              "dependencies": {
+                "sax": {
+                  "version": "0.5.8"
+                }
+              }
+            },
+            "debug": {
+              "version": "0.7.4"
+            },
+            "stream-counter": {
+              "version": "0.1.0",
+              "dependencies": {
+                "readable-stream": {
+                  "version": "1.0.33-1",
+                  "dependencies": {
+                    "core-util-is": {
+                      "version": "1.0.1"
+                    },
+                    "isarray": {
+                      "version": "0.0.1"
+                    },
+                    "string_decoder": {
+                      "version": "0.10.31"
+                    },
+                    "inherits": {
+                      "version": "2.0.1"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "knox": {
       "version": "0.9.1",
       "dependencies": {

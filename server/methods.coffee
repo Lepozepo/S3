@@ -20,7 +20,7 @@ Meteor.methods
 		future = new Future()
 		stream = S3.knox.putStream file_stream_buffer,path,headers, (err,result) ->
 			if result
-				emit = 
+				emit =
 					total_uploaded:result.bytes
 					percent_uploaded:100
 					uploading:false
@@ -156,7 +156,35 @@ Meteor.methods
 
 		future.wait()
 
+	_S3_base64_upload: (base64data, objectkey, mimetype, permissions) ->
+		@unblock()
+
+		future = new Future()
 
 
+		S3.base64.put base64data,objectkey,mimetype,permissions, (e,r)->
+			if e
+				console.log e
+				future.return e
+			else
+				future.return true
+
+		S3.base64.on "progress", (data) ->
+		  console.log "progress", data
+		  return
 
 
+		# progress { percent: 20, written: 768, total: 3728 }
+		S3.base64.on "response", (data) ->
+		  console.log "response", data
+		  return
+
+
+		# response { path: 'https://<bucket>.s3.amazonaws.com/images/success.jpg' }
+		S3.base64.on "error", (err) ->
+		  console.error err
+		  return
+
+		S3.base64.on "close", ->
+		  console.log "closed connection"
+		  return
