@@ -12,7 +12,6 @@ Meteor.methods
 
 		file_stream_buffer.put(buffer)
 		headers =
-			"Content-Type": file.type
 			"Content-Length": buffer.length
 
 		path = "#{path}/#{file.id_name}"
@@ -58,7 +57,6 @@ Meteor.methods
 
 		file_stream_buffer.put(buffer)
 		headers =
-			"Content-Type": file.ftype
 			"Content-Length": buffer.length
 
 		path = "#{path}/#{file.id_name}"
