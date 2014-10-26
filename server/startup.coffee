@@ -1,6 +1,7 @@
 #Start up knox
 Knox = Npm.require "knox"
 AWS = Npm.require "aws-sdk"
+Base64 = Npm.require "base64-string-s3"
 
 #Server side configuration variables
 S3 =
@@ -31,3 +32,5 @@ Meteor.startup ->
 		Secret:S3.config.secret
 		Bucket:S3.config.bucket
 
+	S3.base64 = new Base64
+			client: S3.knox

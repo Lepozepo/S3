@@ -1,4 +1,4 @@
-S3 = 
+S3 =
 	collection: new Meteor.Collection(null)
 	stream: new Meteor.Stream("s3_stream")
 
@@ -110,3 +110,12 @@ S3 =
 	delete: (path,callback) ->
 		Meteor.call "_S3delete", path, callback
 
+	uploadBase64: (data, objectkey, mimetype, permissions, callback) ->
+		#removing the string injected from mgd:camera for using as src of img
+		base64data = data.replace(/^data:image\/\w+;base64,/, "")
+		console.log base64data
+
+		Meteor.call "_S3_base64_upload",base64data, objectkey, mimetype, permissions, (err,res) ->
+			if err
+				console.log err
+			callback and callback(err,res)
