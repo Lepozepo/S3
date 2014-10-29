@@ -5,3 +5,6 @@ if Meteor.isClient
 if Meteor.isServer
 	S3.stream.permissions.read (user,event) ->
 		return true
+
+Meteor.startup ->
+	_.extend S3, chunk_size: 1024 * 1024 * 2

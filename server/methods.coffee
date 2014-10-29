@@ -2,10 +2,10 @@ Future = Npm.require 'fibers/future'
 stream_buffers = Npm.require "stream-buffers"
 
 Meteor.methods
-	_S3upload: (file,path) ->
+	_S3upload: (data) ->
 		@unblock()
 
-		buffer = new Buffer(file.data)
+		buffer = new Buffer(data.data)
 		file_stream_buffer = new stream_buffers.ReadableStreamBuffer
 			frequency:10
 			chunkSize:2048
@@ -14,20 +14,18 @@ Meteor.methods
 		headers =
 			"Content-Length": buffer.length
 
-		path = "#{path}/#{file.id_name}"
-
 		future = new Future()
-		stream = S3.knox.putStream file_stream_buffer,path,headers, (err,result) ->
+		stream = S3.knox.putStream file_stream_buffer,data.target_url,headers, (err,result) ->
 			if result
 				emit = 
 					total_uploaded:result.bytes
 					percent_uploaded:100
 					uploading:false
-					url: S3.knox.http(path)
-					secure_url: S3.knox.https(path)
-					relative_url:path
+					url: S3.knox.http(data.target_url)
+					secure_url: S3.knox.https(data.target_url)
+					relative_url:data.target_url
 
-				S3.stream.emit "upload", file.id,
+				S3.stream.emit "upload", data._id,
 					$set:emit
 
 				future.return emit
@@ -36,7 +34,7 @@ Meteor.methods
 				future.return err
 
 		stream.on "progress", (progress) ->
-			S3.stream.emit "upload", file.id,
+			S3.stream.emit "upload", data._id,
 				$set:
 					total_uploaded:progress.written
 					percent_uploaded:progress.percent
@@ -47,10 +45,16 @@ Meteor.methods
 
 		future.wait()
 
-	_S3_multipart_upload: (file,path) ->
+	check_aws_S3: ->
+		console.log "ran"
+		S3.aws.listObjects Bucket:S3.config.bucket, (err,res) ->
+			console.log err
+			console.log res
+
+	_S3_multipart_upload: (data) ->
 		@unblock()
 
-		buffer = new Buffer(file.data)
+		buffer = new Buffer(data.data)
 		file_stream_buffer = new stream_buffers.ReadableStreamBuffer
 			frequency:10
 			chunkSize:2048
@@ -58,8 +62,6 @@ Meteor.methods
 		file_stream_buffer.put(buffer)
 		headers =
 			"Content-Length": buffer.length
-
-		path = "#{path}/#{file.id_name}"
 
 		#If no upload id then create it and save it to client for reuse
 		if not file.upload_id
