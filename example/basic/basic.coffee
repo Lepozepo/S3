@@ -1,18 +1,26 @@
 if Meteor.isClient
 	Template.basic.helpers
-		"stuff": ->
-			_id:"1234"
-			name:"Rocket Fuel"
+		"files": -> S3.collection.find()
 
+	Template.basic.events
+		"click button.upload": (event) ->
+			S3.upload $("input.file_bag")[0].files,"/tester",(error,result) ->
+				if error
+					console.log error
+				else
+					console.log result
+
+		"click button.delete": (event) ->
+			S3.delete @relative_url, (error,res) ->
+				if not error
+					console.log res
+				else
+					console.log error
 
 if Meteor.isServer
 	S3.config =
-		key:"aws_key"
-		secret:"aws_secret"
-		bucket:"bucket"
-		directory:"/tester/"
+		key:"yourkey"
+		secret:"yoursecret"
+		bucket:"yourbucket"
 
-	Meteor.methods
-		save_url: (url,context) ->
-			console.log url
-			console.log context
+

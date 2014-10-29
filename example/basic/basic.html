@@ -7,9 +7,14 @@
 </body>
 
 <template name="basic">
-	{{#with stuff}}
-		{{#S3 callback="save_url"}}
-			<input type="file">
-		{{/S3}}
-	{{/with}}
+
+	<input type="file" class="file_bag" multiple>
+	<button class="upload">upload it</button>
+
+	{{#each files}}
+		<p>{{percent_uploaded}}</p>
+		<img src="{{secure_url}}" height="250px">
+		<button class="delete">Delete</button>
+	{{/each}}
+
 </template>
