@@ -21,10 +21,6 @@ Meteor.startup ->
 	if not _.has(S3.config,"bucket") or not _.has(S3.config,"secret") or not _.has(S3.config,"key")
 		return
 
-	# config = new AWS.Config
-	# 	accessKeyId:S3.config.key
-	# 	secretAccessKey:S3.config.secret
-
 	S3.knox = Knox.createClient S3.config
 	S3.aws = new AWS.S3
 		accessKeyId:S3.config.key
