@@ -26,7 +26,7 @@ insecure@1.0.1
 jquery@1.0.1
 json@1.0.1
 launch-screen@1.0.0
-lepozepo:s3@4.1.0
+lepozepo:s3@4.1.1
 lepozepo:streams@0.2.0
 livedata@1.0.11
 localstorage@1.0.1
