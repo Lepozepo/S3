@@ -75,11 +75,13 @@ Meteor.methods
 		return
 
 	_S3_abort_mpu: (upload = {}) ->
+		@unblock()
+
 		S3.aws.abortMultipartUpload
 			Bucket:S3.config.bucket
 			Key:upload.key
 			UploadId:upload.id
-			(error,result) ->
+			Meteor.bindEnvironment (error,result) ->
 				if error
 					throw new Meteor.Error "_S3_abort_mpu failed", error
 
@@ -98,27 +100,31 @@ Meteor.methods
 		if not data.aws.upload_id
 			S3.aws.createMultipartUpload
 				Bucket:S3.config.bucket
-				Key:S3.config.key
+				Key:data.target_url
 				Meteor.bindEnvironment (error,result) ->
 					if not error
 						aws_stream = S3.aws.uploadPart
 							Body:file_stream_buffer
 							Bucket:S3.config.bucket
-							Key:S3.config.key
+							Key:data.target_url
 							PartNumber:data.chunk_number
 							UploadId:result.UploadId
 							ContentLength:file_stream_buffer.size()
 
 						aws_stream.on "httpUploadProgress", (progress) ->
+							uploaded = Math.ceil(((data.read_progress + progress.loaded) / data.size) * 100)
+							if uploaded > 100
+								uploaded = 100
+
 							S3.stream.emit "upload", data._id,
 								$set:
 									total_uploaded:data.read_progress + progress.loaded
-									percent_uploaded:((data.read_progress + progress.loaded) / data.size) * 100
+									percent_uploaded:uploaded
 									uploading:true
 
 						aws_stream.on "error", (response) ->
 							Meteor.call "_S3_abort_mpu",
-								key:data.aws.upload_key
+								key:data.target_url
 								id:data.aws.upload_id
 								->
 									throw new Meteor.Error "aws_stream",response.message
@@ -139,21 +145,25 @@ Meteor.methods
 			aws_stream = S3.aws.uploadPart
 				Body:file_stream_buffer
 				Bucket:S3.config.bucket
-				Key:S3.config.key
+				Key:data.target_url
 				PartNumber:data.chunk_number
 				UploadId:data.aws.upload_id
 				ContentLength:file_stream_buffer.size()
 
 			aws_stream.on "httpUploadProgress", (progress) ->
+				uploaded = Math.ceil(((data.read_progress + progress.loaded) / data.size) * 100)
+				if uploaded > 100
+					uploaded = 100
+
 				S3.stream.emit "upload", data._id,
 					$set:
 						total_uploaded:data.read_progress + progress.loaded
-						percent_uploaded:((data.read_progress + progress.loaded) / data.size) * 100
+						percent_uploaded:uploaded
 						uploading:true
 
 			aws_stream.on "error", (response) ->
 				Meteor.call "_S3_abort_mpu",
-					key:data.aws.upload_key
+					key:data.target_url
 					id:data.aws.upload_id
 					->
 						throw new Meteor.Error "aws_stream",response.message
@@ -161,7 +171,7 @@ Meteor.methods
 			aws_stream.on "success", (response) ->
 				future.return
 					upload_id:data.aws.upload_id
-					upload_key:data.aws.upload_key
+					upload_key:data.target_url
 					part:
 						ETag:response.data.ETag
 						PartNumber:data.chunk_number
@@ -176,14 +186,24 @@ Meteor.methods
 		future = new Future()
 		S3.aws.completeMultipartUpload
 			Bucket:S3.config.bucket
-			Key:data.aws.upload_key
+			Key:data.target_url
 			UploadId:data.aws.upload_id
 			MultipartUpload:
 				Parts:data.aws.Parts
 			(error,result) ->
 				if not error
-					console.log result
-					future.return result
+					emit = 
+						total_uploaded:result.bytes
+						percent_uploaded:100
+						uploading:false
+						url: S3.knox.http(data.target_url)
+						secure_url: S3.knox.https(data.target_url)
+						relative_url:data.target_url
+
+					S3.stream.emit "upload", data._id,
+						$set:emit
+
+					future.return emit
 				else
 					throw new Meteor.Error "_S3_multipart_close",error
 
