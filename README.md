@@ -143,5 +143,7 @@ This is the meteor stream that is created between the server and the S3.collecti
 The current knox client.
 
 
-
+#### Developer Notes
+http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/frames.html
+https://github.com/Differential/meteor-uploader/blob/master/lib/UploaderFile.coffee#L169-L178
 

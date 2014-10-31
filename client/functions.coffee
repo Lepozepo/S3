@@ -33,12 +33,13 @@ class upload_file
 		@read_start = 0
 		@read_end = S3.chunk_size
 		@read_progress = 0 #in bytes
-		@chunk_number = 0
+		@chunk_number = 1
 		@total_chunks = Math.ceil @size / S3.chunk_size
 		@path = data.path
 		@target_url = "#{@path}/#{@id_name}".replace(/\/\//g, "/")
 		@callback = data.callback
 		@upload_result = null
+		@aws = {Parts:[]}
 
 		@read()
 
@@ -66,22 +67,36 @@ class upload_file
 							@callback and @callback err,null
 							throw new Meteor.Error "_S3upload",err
 
-				if @total_chunks > 1
-					Meteor.call "_S3upload_mpu",this,(err,res) =>
+				if @total_chunks > 1 and (@chunk_number-1) isnt @total_chunks
+					Meteor.call "_S3_multipart_upload",this,(err,res) =>
 						if not err
 							@read_progress += S3.chunk_size
 							@chunk_number += 1
-							@upload_result = res
+							@aws.upload_id = res.upload_id
+							@aws.upload_key = res.upload_key
+							@aws.Parts.push res.part
 							@read()
 						else
 							S3.collection.remove @_id
 							@callback and @callback err,null
-							throw new Meteor.Error "_S3upload_mpu",err
+							throw new Meteor.Error "_S3_multipart_upload",err
 
 			reader.readAsArrayBuffer chunk
 
-		else if @upload_result and @read_progress is @size
-			@callback and @callback null,@upload_result
+		else if @read_progress >= @size
+			if @aws
+				Meteor.call "_S3_multipart_close",this,(err,res) =>
+					if not err
+						console.log res
+						@callback and @callback null,res
+					else
+						S3.collection.remove @_id
+						@callback and @callback err,null
+						throw new Meteor.Error "_S3_multipart_close",err
+			else
+				@callback and @callback null,@upload_result
+
+
 
 	# _upload_file: (file,path,callback) ->
 	# 	chunk_size = 1024 * 1024 * 2

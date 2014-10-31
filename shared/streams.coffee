@@ -7,4 +7,4 @@ if Meteor.isServer
 		return true
 
 Meteor.startup ->
-	_.extend S3, chunk_size: 1024 * 1024 * 2
+	_.extend S3, chunk_size: 1024 * 1024 * 5.3
