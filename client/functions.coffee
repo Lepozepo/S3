@@ -88,7 +88,7 @@ class upload_file
 			reader.readAsArrayBuffer chunk
 
 		else if @read_progress >= @size
-			if @aws
+			if @aws.Parts.length > 1
 				Meteor.call "_S3_multipart_close",this,(err,res) =>
 					if not err
 						@callback and @callback null,res
