@@ -91,6 +91,7 @@ Save it. Now click Edit bucket policy and paste this, REPLACE THE BUCKET NAME WI
 ```
 
 Enjoy, this took me a long time to figure out and I'm sharing it so that nobody has to go through all that.
+__NOTE:__ It might take a couple of hours before you can actually start uploading to S3. Amazon takes some time to make things work.
 
 ## API
 
