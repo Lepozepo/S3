@@ -14,7 +14,8 @@ Meteor.methods
 
 		file_stream_buffer.put(buffer)
 		headers =
-			"Content-Length": buffer.length
+			"Content-Length": buffer.length,
+			"Content-Type": data.file.type
 
 		future = new Future()
 		stream = S3.knox.putStream file_stream_buffer,data.target_url,headers, (err,result) ->
