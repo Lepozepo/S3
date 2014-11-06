@@ -1,24 +1,20 @@
 @S3 =
 	collection: new Meteor.Collection(null)
 	stream: new Meteor.Stream("s3_stream")
-	upload: (files,path,callback) ->
-		if not files or _.isString(files) or _.isArray(files)
+	upload: (ops = {},callback) ->
+		if not ops.files or _.isString(ops.files) or _.isArray(ops.files)
 			throw new Meteor.Error "S3.upload","Needs files to upload"
 
-		if not path and not callback
-			path = "/"
+		if not ops.path
+			ops.path = "/"
 
-		if _.isFunction path
-			callback = path
-			path = "/"
-
-		_.each files, (file) ->
+		_.each ops.files, (file) ->
 			if file.size and file.size > 0
 				ftype = file.type
 				new upload_file
 					file:file
 					ftype:ftype
-					path:path
+					path:ops.path
 					callback:callback
 
 	delete: (path,callback) ->
