@@ -14,8 +14,10 @@
 
 		_.each files, (file) ->
 			if file.size and file.size > 0
+				ftype = file.type
 				new upload_file
 					file:file
+					ftype:ftype
 					path:path
 					callback:callback
 
@@ -31,6 +33,7 @@ class upload_file
 
 		@_id = id
 		@file = data.file
+		@ftype = data.ftype
 		@extension = _.last data.file.name.split(".")
 		@id_name = "#{@_id}.#{@extension}"
 		@size = data.file.size
@@ -88,7 +91,7 @@ class upload_file
 			reader.readAsArrayBuffer chunk
 
 		else if @read_progress >= @size
-			if @aws
+			if @aws.Parts.length > 1
 				Meteor.call "_S3_multipart_close",this,(err,res) =>
 					if not err
 						@callback and @callback null,res
