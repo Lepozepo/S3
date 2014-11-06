@@ -120,6 +120,7 @@ Meteor.methods
 			S3.aws.createMultipartUpload
 				Bucket:S3.config.bucket
 				Key:data.target_url
+				ContentType:data.ftype
 				Meteor.bindEnvironment (error,result) ->
 					if not error
 						aws_stream = S3.aws.uploadPart
