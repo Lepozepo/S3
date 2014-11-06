@@ -25,4 +25,5 @@ Meteor.startup ->
 	S3.aws = new AWS.S3
 		accessKeyId:S3.config.key
 		secretAccessKey:S3.config.secret
+		region:S3.config.region
 
