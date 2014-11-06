@@ -1,6 +1,25 @@
 Future = Npm.require 'fibers/future'
 stream_buffers = Npm.require "stream-buffers"
 
+#WIP
+# current_streaming_chunks = []
+
+# class upload_file
+# 	constructor: (data={}) ->
+# 		this = data
+
+# 		current_streaming_chunk = _.findWhere current_streaming_chunks,_id:@_id
+# 		if current_streaming_chunk
+# 			@append()
+# 		else
+# 			@create()
+
+# 	create: ->
+# 		current_streaming_chunks.push =
+# 			_id:@_id
+# 			buffer:new Buffer @data
+
+
 Meteor.methods
 	_S3upload: (data) ->
 		@unblock()
@@ -15,10 +34,11 @@ Meteor.methods
 		file_stream_buffer.put(buffer)
 		headers =
 			"Content-Length": buffer.length
+			"Content-Type":data.ftype
 
 		future = new Future()
 		stream = S3.knox.putStream file_stream_buffer,data.target_url,headers, (err,result) ->
-			if result
+			if not err and result
 				emit = 
 					total_uploaded:result.bytes
 					percent_uploaded:100
@@ -32,8 +52,7 @@ Meteor.methods
 
 				future.return emit
 			else
-				console.log err
-				future.return err
+				throw new Meteor.Error "S3.knox.putStream", err
 
 		stream.on "progress", (progress) ->
 			S3.stream.emit "upload", data._id,
@@ -43,7 +62,7 @@ Meteor.methods
 					uploading:true
 
 		stream.on "error", (error) ->
-			console.log error
+			throw new Meteor.Error "S3.knox.putStream", error
 
 		future.wait()
 
