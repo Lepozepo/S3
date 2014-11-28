@@ -24,7 +24,11 @@ Meteor.methods
 	_S3upload: (data) ->
 		@unblock()
 
-		buffer = new Buffer(data.data)
+		if data.encoding and (data.encoding is "utf8" or data.encoding is "ascii" or data.encoding is "ucs2" or data.encoding is "base64" or data.encoding is "binary" or data.encoding is "hex")
+			console.log "Ran with special encoding: #{data.encoding}"
+			buffer = new Buffer data.data,data.encoding
+		else
+			buffer = new Buffer(data.data)
 
 		#Create a stream to pump data into knox slowly, this should help keep CPU usage steady
 		file_stream_buffer = new stream_buffers.ReadableStreamBuffer
@@ -34,25 +38,30 @@ Meteor.methods
 		file_stream_buffer.put(buffer)
 		headers =
 			"Content-Length": buffer.length
-			"Content-Type":data.ftype
+
+		if data.ftype
+			headers["Content-Type"] = data.ftype
 
 		future = new Future()
 		stream = S3.knox.putStream file_stream_buffer,data.target_url,headers, (err,result) ->
 			if not err and result
-				emit = 
-					total_uploaded:result.bytes
-					percent_uploaded:100
-					uploading:false
-					url: S3.knox.http(data.target_url)
-					secure_url: S3.knox.https(data.target_url)
-					relative_url:data.target_url
+				if result.statusCode is 200
+					emit = 
+						total_uploaded:result.bytes
+						percent_uploaded:100
+						uploading:false
+						url: S3.knox.http(data.target_url)
+						secure_url: S3.knox.https(data.target_url)
+						relative_url:data.target_url
 
-				S3.stream.emit "upload", data._id,
-					$set:emit
+					S3.stream.emit "upload", data._id,
+						$set:emit
 
-				future.return emit
+					future.return emit
+				else
+					future.return new Meteor.Error "S3.knox.putStream", result
 			else
-				throw new Meteor.Error "S3.knox.putStream", err
+				future.return new Meteor.Error "S3.knox.putStream", err
 
 		stream.on "progress", (progress) ->
 			S3.stream.emit "upload", data._id,
@@ -62,9 +71,15 @@ Meteor.methods
 					uploading:true
 
 		stream.on "error", (error) ->
-			throw new Meteor.Error "S3.knox.putStream", error
+			if not future.return
+				future.return new Meteor.Error "S3.knox.putStream", error
 
 		future.wait()
+
+		if future.get().hasOwnProperty "error"
+			throw future.get()
+		else
+			future.get()
 
 	list_S3_mpus: ->
 		S3.aws.listMultipartUploads Bucket:S3.config.bucket, (err,res) ->
@@ -107,7 +122,12 @@ Meteor.methods
 	_S3_multipart_upload: (data) ->
 		@unblock()
 
-		buffer = new Buffer(data.data)
+		if data.encoding and (data.encoding is "utf8" or data.encoding is "ascii" or data.encoding is "ucs2" or data.encoding is "base64" or data.encoding is "binary" or data.encoding is "hex")
+			console.log "Ran with special encoding: #{data.encoding}"
+			buffer = new Buffer data.data,data.encoding
+		else
+			buffer = new Buffer(data.data)
+
 		file_stream_buffer = new stream_buffers.ReadableStreamBuffer
 			frequency:10
 			chunkSize:2048 * 4
@@ -147,7 +167,7 @@ Meteor.methods
 								key:data.target_url
 								id:data.aws.upload_id
 								->
-									throw new Meteor.Error "aws_stream",response.message
+									future.return new Meteor.Error "aws_stream",response.message
 
 						aws_stream.on "success", (response) ->
 							future.return
@@ -159,7 +179,7 @@ Meteor.methods
 
 						aws_stream.send()
 					else
-						throw new Meteor.Error "aws.createMpu",error
+						future.return new Meteor.Error "aws.createMpu",error
 
 		if data.aws.upload_id
 			aws_stream = S3.aws.uploadPart
@@ -186,7 +206,7 @@ Meteor.methods
 					key:data.target_url
 					id:data.aws.upload_id
 					->
-						throw new Meteor.Error "aws_stream",response.message
+						future.return new Meteor.Error "aws_stream",response.message
 
 			aws_stream.on "success", (response) ->
 				future.return
@@ -199,6 +219,11 @@ Meteor.methods
 			aws_stream.send()
 
 		future.wait()
+
+		if future.get().hasOwnProperty "error"
+			throw future.get()
+		else
+			future.get()
 
 	_S3_multipart_close: (data) ->
 		@unblock()
@@ -225,9 +250,14 @@ Meteor.methods
 
 					future.return emit
 				else
-					throw new Meteor.Error "_S3_multipart_close",error
+					future.return new Meteor.Error "_S3_multipart_close",error
 
 		future.wait()
+
+		if future.get().hasOwnProperty "error"
+			throw future.get()
+		else
+			future.get()
 
 	_S3delete: (path) ->
 		@unblock()

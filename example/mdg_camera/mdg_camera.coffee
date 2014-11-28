@@ -5,8 +5,9 @@ if Meteor.isClient
 	Template.basic.events
 		"click button.upload": (event) ->
 			S3.upload
-				files:$("input.file_bag")[0].files
+				files:[$("textarea").val()]
 				path:"/tester"
+				encoding:"base64"
 				(error,result) ->
 					if error
 						console.log error

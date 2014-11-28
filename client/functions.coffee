@@ -2,8 +2,10 @@
 	collection: new Meteor.Collection(null)
 	stream: new Meteor.Stream("s3_stream")
 	upload: (ops = {},callback) ->
-		if not ops.files or _.isString(ops.files) or _.isArray(ops.files)
-			throw new Meteor.Error "S3.upload","Needs files to upload"
+		if not ops.files or ops.files.length is 0
+			err = new Meteor.Error "S3.upload","Needs files to upload"
+			callback and callback err,null
+			throw err
 
 		if not ops.path
 			ops.path = "/"
@@ -16,6 +18,13 @@
 					ftype:ftype
 					path:ops.path
 					callback:callback
+					encoding:ops.encoding
+			else if ops.encoding
+				new upload_file
+					file:file
+					path:ops.path
+					callback:callback
+					encoding:ops.encoding
 
 	delete: (path,callback) ->
 		Meteor.call "_S3delete", path, callback
@@ -24,12 +33,14 @@
 class upload_file
 	constructor: (data = {}) ->
 		id = S3.collection.insert
+			file_name:data.file.name
 			total_uploaded:0
 			percent_uploaded:0
 
 		@_id = id
 		@file = data.file
 		@ftype = data.ftype
+		@encoding = data.encoding
 		@extension = _.last data.file.name.split(".")
 		@id_name = "#{@_id}.#{@extension}"
 		@size = data.file.size
@@ -90,13 +101,15 @@ class upload_file
 			if @aws.Parts.length > 1
 				Meteor.call "_S3_multipart_close",this,(err,res) =>
 					if not err
-						@callback and @callback null,res
+						result = S3.collection.findOne @_id
+						@callback and @callback null,result
 					else
 						S3.collection.remove @_id
 						@callback and @callback err,null
 						throw new Meteor.Error "_S3_multipart_close",err
 			else
-				@callback and @callback null,@upload_result
+				result = S3.collection.findOne @_id
+				@callback and @callback null,result
 
 
 
