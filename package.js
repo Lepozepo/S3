@@ -1,5 +1,5 @@
 Package.describe({
-	name:"lepozepo:s3:s3",
+	name:"lepozepo:s3",
 	summary: "Upload files to S3. Allows use of Knox Server-Side.",
 	version:"4.1.3",
 	git:"https://github.com/Lepozepo/S3"
