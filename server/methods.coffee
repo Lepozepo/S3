@@ -73,7 +73,8 @@ Meteor.methods
 
 		stream.on "error", (error) ->
 			#throwing an error in this context (ClientRequest) would bring down the whole app
-			future.return new Meteor.Error "S3.knox.putStream", err
+			if !future.return
+				future.return new Meteor.Error "S3.knox.putStream", error
 
 		# wait for the stream to finish
 		future.wait()
