@@ -39,20 +39,28 @@ Meteor.methods
 		future = new Future()
 		stream = S3.knox.putStream file_stream_buffer,data.target_url,headers, (err,result) ->
 			if not err and result
-				emit = 
-					total_uploaded:result.bytes
-					percent_uploaded:100
-					uploading:false
-					url: S3.knox.http(data.target_url)
-					secure_url: S3.knox.https(data.target_url)
-					relative_url:data.target_url
+				#upload successful, as we got back HTTP 200
+				if result.statusCode == 200
+					emit =
+						total_uploaded:result.bytes
+						percent_uploaded:100
+						uploading:false
+						url: S3.knox.http(data.target_url)
+						secure_url: S3.knox.https(data.target_url)
+						relative_url:data.target_url
 
-				S3.stream.emit "upload", data._id,
-					$set:emit
+					S3.stream.emit "upload", data._id,
+						$set:emit
 
-				future.return emit
+					future.return emit
+					#nope, return an error
+				else
+					#throwing an error in this context (ClientRequest) would bring down the whole app
+					future.return new Meteor.Error "S3.knox.putStream - status code not OK (200), but " + result.statusCode
+
 			else
-				throw new Meteor.Error "S3.knox.putStream", err
+				#throwing an error in this context (ClientRequest) would bring down the whole app
+				future.return new Meteor.Error "S3.knox.putStream", err
 
 		stream.on "progress", (progress) ->
 			S3.stream.emit "upload", data._id,
@@ -62,9 +70,18 @@ Meteor.methods
 					uploading:true
 
 		stream.on "error", (error) ->
-			throw new Meteor.Error "S3.knox.putStream", error
+			#throwing an error in this context (ClientRequest) would bring down the whole app
+			future.return new Meteor.Error "S3.knox.putStream", err
 
+		# wait for the stream to finish
 		future.wait()
+
+		# rethrow error, if we got one
+		if future.get().hasOwnProperty 'error'
+			throw future.get()
+			# otherwise simply return the result
+		else
+			future.get()
 
 	list_S3_mpus: ->
 		S3.aws.listMultipartUploads Bucket:S3.config.bucket, (err,res) ->
@@ -212,7 +229,7 @@ Meteor.methods
 				Parts:data.aws.Parts
 			(error,result) ->
 				if not error
-					emit = 
+					emit =
 						total_uploaded:result.bytes
 						percent_uploaded:100
 						uploading:false
