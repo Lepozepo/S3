@@ -42,6 +42,7 @@ Meteor.methods
 				#upload successful, as we got back HTTP 200
 				if result.statusCode == 200
 					emit =
+						file_name:data.file.name
 						total_uploaded:result.bytes
 						percent_uploaded:100
 						uploading:false
@@ -65,6 +66,7 @@ Meteor.methods
 		stream.on "progress", (progress) ->
 			S3.stream.emit "upload", data._id,
 				$set:
+					file_name:data.file.name
 					total_uploaded:progress.written
 					percent_uploaded:progress.percent
 					uploading:true

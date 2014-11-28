@@ -28,6 +28,7 @@
 class upload_file
 	constructor: (data = {}) ->
 		id = S3.collection.insert
+			file_name:data.file.name
 			total_uploaded:0
 			percent_uploaded:0
 
