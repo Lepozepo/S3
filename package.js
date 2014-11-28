@@ -1,8 +1,8 @@
 Package.describe({
-	name:"ludekdolejsky:s3",
+	name:"lepozepo:s3:s3",
 	summary: "Upload files to S3. Allows use of Knox Server-Side.",
-	version:"4.1.4",
-	git:"https://github.com/ludekdolejsky/S3"
+	version:"4.1.3",
+	git:"https://github.com/Lepozepo/S3"
 });
 
 Npm.depends({

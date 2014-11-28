@@ -1,4 +1,3 @@
 .build*
 .DS_store
-.idea/
 example/basic/.aws_keys.txt
