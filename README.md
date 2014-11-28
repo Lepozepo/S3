@@ -43,7 +43,7 @@ Create a function to upload the files and a helper to see the uploads progress. 
 Template.s3_tester.events({
 	"click button.upload": function(){
 		var files = $("input.file_bag")[0].files
-		S3.upload(files,"/subfolder",function(e,r){
+		S3.upload({files:files,path:"/subfolder"},function(e,r){
 			console.log(r);
 		});
 	}
@@ -103,12 +103,12 @@ This is a null Meteor.Collection that exists only on the users client. After the
 #### S3.stream
 This is the meteor stream that is created between the server and the S3.collection object on the client to relay information. You probably don't need access to this.
 
-#### S3.upload(files,path,callback)
+#### S3.upload(ops,callback)
 This is the upload function that manages all the dramatic things you need to do for something so essentially simple.
 
 __Parameters:__
-*	__files:__ Must be a FileList object. You can get this via jQuery via $("input[type='file']")[0].files
-*	__path:__ Must be in this format ("/folder/other_folder"). So basically always start with "/" and never end with "/". This is required.
+*	__ops.files:__ Must be a FileList object. You can get this via jQuery via $("input[type='file']")[0].files
+*	__ops.path:__ Must be in this format ("/folder/other_folder"). So basically always start with "/" and never end with "/". This is required.
 *	__callback:__ A function that is run after the upload is complete returning an Error as the first parameter (if there is one), and a Result as the second.
 *	__Result:__ The returned value of the callback function if there is no error. It returns an object with these keys:
 	*	__total_uploaded:__ Integer (bytes)
