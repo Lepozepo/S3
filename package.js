@@ -29,4 +29,8 @@ Package.on_use(function (api) {
 
 	//Allows user access to Knox
 	api.export && api.export("Knox","server");
+
+	//Allows user access to AWS-SDK
+	api.export && api.export("AWS","server");
+
 });
