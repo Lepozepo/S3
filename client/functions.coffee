@@ -10,6 +10,7 @@
 		# status: ["signing","uploading","complete"]
 		# url
 		# secure_url
+		# relative_url
 
 	upload: (ops = {},callback) ->
 		# ops.files [REQUIRED]
