@@ -14,18 +14,15 @@ Npm.depends({
 Package.on_use(function (api) {
 	api.versionsFrom('METEOR@1.0');
 
-	api.use(["underscore", "check","coffeescript","service-configuration","lepozepo:streams@0.2.0"], ["client", "server"]);
-	// api.use(["ui@1.0.0","templating@1.0.0","spacebars@1.0.0"], "client");
+	api.use(["underscore","check","coffeescript","service-configuration"], ["client", "server"]);
 
 	// Client
 	api.add_files("client/functions.coffee", "client");
 
 	// Server
-	api.add_files("server/methods.coffee", "server");
 	api.add_files("server/startup.coffee", "server");
-
-	// Both
-	api.add_files("shared/streams.coffee", ["client","server"]);
+	api.add_files("server/sign_request.coffee", "server");
+	api.add_files("server/delete_object.coffee", "server");
 
 	//Allows user access to Knox
 	api.export && api.export("Knox","server");

@@ -148,3 +148,6 @@ The current knox client.
 http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/frames.html
 https://github.com/Differential/meteor-uploader/blob/master/lib/UploaderFile.coffee#L169-L178
 
+http://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-auth-using-authorization-header.html
+http://docs.aws.amazon.com/general/latest/gr/sigv4-signed-request-examples.html
+https://github.com/CulturalMe/meteor-slingshot/blob/master/services/aws-s3.js
