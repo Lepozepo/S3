@@ -1,4 +1,4 @@
-#Start up knox
+#Get Knox and AWS libraries
 Knox = Npm.require "knox"
 AWS = Npm.require "aws-sdk"
 
@@ -6,7 +6,7 @@ AWS = Npm.require "aws-sdk"
 @S3 =
 	config:{}
 	knox:{}
-	stream: new Meteor.Stream("s3_stream")
+	aws:{}
 
 Meteor.startup ->
 	if not _.has S3.config,"key"
@@ -21,8 +21,12 @@ Meteor.startup ->
 	if not _.has(S3.config,"bucket") or not _.has(S3.config,"secret") or not _.has(S3.config,"key")
 		return
 
+	_.defaults S3.config,
+		region:"us-east-1" # us-standard
+
 	S3.knox = Knox.createClient S3.config
 	S3.aws = new AWS.S3
 		accessKeyId:S3.config.key
 		secretAccessKey:S3.config.secret
+		region:S3.config.region
 

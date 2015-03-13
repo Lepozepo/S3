@@ -1,7 +1,19 @@
 # Amazon S3 Uploader
-__This package is no longer supporting meteor releases before 0.9.0.__ S3 provides a simple way for uploading files to the Amazon S3 service with a progress bar. This is useful for uploading images and files that you want accesible to the public. S3 is built on [Knox](https://github.com/LearnBoost/knox), a module that becomes available server-side after installing this package.
+S3 provides a simple way for uploading files to the Amazon S3 service with a progress bar. This is useful for uploading images and files that you want accesible to the public. S3 is built on [Knox](https://github.com/LearnBoost/knox) and [AWS-SDK](https://github.com/aws/aws-sdk-js). Both modules are made available on the server after installing this package.
 
-If you want to keep using the older version of this package check it out using `meteor add lepozepo:s3@=3.0.1`
+If you want to keep using the older version of this package (pre 0.9.0) check it out using `meteor add lepozepo:s3@=3.0.1`
+
+If you want to keep using the version of this package that uses server resources to upload files check it out using `meteor add lepozepo:s3@=4.1.3`
+
+**S3 now uploads directly from the client to Amazon. Client files will not touch your server.**
+
+## Migrating from 4.1.3 to 5.x.x
+* S3.upload path parameter: "" is now root instead of "/".
+* Methods:
+	* _S3upload, _S3_abort_mpu, _S3_multipart_upload, and _S3_multipart_close have been destroyed
+	* _S3delete has been renamed to _s3_delete
+* Infrastructure:
+	* Package no longer uses lepozepo:streams
 
 ## Installation
 
@@ -43,8 +55,12 @@ Create a function to upload the files and a helper to see the uploads progress. 
 Template.s3_tester.events({
 	"click button.upload": function(){
 		var files = $("input.file_bag")[0].files
-		S3.upload(files,"/subfolder",function(e,r){
-			console.log(r);
+
+		S3.upload({
+				files:files,
+				path:"subfolder"
+			},function(e,r){
+				console.log(r);
 		});
 	}
 })
@@ -64,10 +80,15 @@ You need to set permissions so that everyone can see what's in there. Under the 
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
-    <CORSRule>
-        <AllowedOrigin>*</AllowedOrigin>
-        <AllowedMethod>GET</AllowedMethod>
-    </CORSRule>
+	<CORSRule>
+		<AllowedOrigin>*</AllowedOrigin>
+		<AllowedMethod>PUT</AllowedMethod>
+		<AllowedMethod>POST</AllowedMethod>
+		<AllowedMethod>GET</AllowedMethod>
+		<AllowedMethod>HEAD</AllowedMethod>
+		<MaxAgeSeconds>3000</MaxAgeSeconds>
+		<AllowedHeader>*</AllowedHeader>
+	</CORSRule>
 </CORSConfiguration>
 ```
 
@@ -100,25 +121,46 @@ __NOTE:__ It might take a couple of hours before you can actually start uploadin
 #### S3.collection
 This is a null Meteor.Collection that exists only on the users client. After the user leaves the page or refreshes, the collection disappears forever.
 
-#### S3.stream
-This is the meteor stream that is created between the server and the S3.collection object on the client to relay information. You probably don't need access to this.
-
-#### S3.upload(files,path,callback)
+#### S3.upload(ops,callback)
 This is the upload function that manages all the dramatic things you need to do for something so essentially simple.
 
 __Parameters:__
-*	__files:__ Must be a FileList object. You can get this via jQuery via $("input[type='file']")[0].files
-*	__path:__ Must be in this format ("/folder/other_folder"). So basically always start with "/" and never end with "/". This is required.
+*	__ops.files [REQUIRED]:__ Must be a FileList object. You can get this via jQuery via $("input[type='file']")[0].files.
+*	__ops.path [DEFAULT: ""]:__ Must be in this format ("folder/other_folder"). So basically never start with "/" and never end with "/". Defaults to ROOT folder.
+*	__ops.unique_name [DEFAULT: true]:__ If set to true, the uploaded file name will be set to a uuid without changing the files' extension. If set to false, the uploaded file name will be set to the original name of the file.
+*	__ops.expiration [DEFAULT: 1800000 (30 mins)]:__ Defines how much time the file has before Amazon denies the upload. Must be in milliseconds. Defaults to 1800000 (30 minutes).
+*	__ops.uploader [DEFAULT: "default"]:__ Defines the name of the uploader. Useful for forms that use multiple uploaders.
+*	__ops.acl [DEFAULT: "public-read"]:__ Access Control List. Describes who has access to the file. Can only be one of the following options:
+	* "private"
+	* "public-read"
+	* "public-read-write"
+	* "authenticated-read"
+	* "bucket-owner-read"
+	* "bucket-owner-full-control"
+	* "log-delivery-write"
+	* __Support for signed GET is still pending so uploads that require authentication won't be easily reachable__
+*	__ops.bucket [DEFAULT: SERVER SETTINGS]:__ Overrides the bucket that will be used for the upload.
+*	__ops.region [DEFAULT: SERVER SETTINGS]:__ Overrides the region that will be used for the upload. Only accepts the following regions:
+	* "us-west-2"
+	* "us-west-1"
+	* "eu-west-1"
+	* "eu-central-1"
+	* "ap-southeast-1"
+	* "ap-southeast-2"
+	* "ap-northeast-1"
+	* "sa-east-1"
 *	__callback:__ A function that is run after the upload is complete returning an Error as the first parameter (if there is one), and a Result as the second.
 *	__Result:__ The returned value of the callback function if there is no error. It returns an object with these keys:
-	*	__total_uploaded:__ Integer (bytes)
+	*	__loaded:__ Integer (bytes)
+	*	__total:__ Integer (bytes)
 	*	__percent_uploaded:__ Integer (out of 100)
-	*	__uploading:__ Boolean (false if done uploading)
+	*	__uploader:__ String (describes which uploader was used to upload the file)
 	*	__url:__ String (S3 hosted URL)
 	*	__secure_url:__ String (S3 hosted URL for https)
+	*	__relative_url:__ String (S3 URL for delete operations, this is what you should save in your DB to control delete)
 
 #### S3.delete(path,callback)
-This function permanently destroys files located in your S3 bucket. It still needs more work for security in the form of allow/deny rules.
+This function permanently destroys a file located in your S3 bucket. It still needs more work for security in the form of allow/deny rules.
 
 __Parameters:__
 *	__path:__ Must be in this format ("/folder/other_folder/file.extension"). So basically always start with "/" and never end with "/". This is required.
@@ -126,8 +168,22 @@ __Parameters:__
 
 ### S3 (SERVER SIDE)
 
-#### S3.config
-This is where you define your key, secret, and bucket.
+#### S3.config(ops)
+This is where you define your key, secret, bucket, and other account wide settings.
+
+__Parameters:__
+*	__ops.key [REQUIRED]:__ Your Amazon AWS Key.
+*	__ops.secret [REQUIRED]:__ Your Amazon AWS Secret.
+*	__ops.bucket [REQUIRED]:__ Your Amazon AWS S3 bucket.
+*	__ops.region [DEFAULT: "us-east-1"]:__ Your Amazon AWS S3 Region. Defaults to US Standard. Can be any of the following:
+	* "us-west-2"
+	* "us-west-1"
+	* "eu-west-1"
+	* "eu-central-1"
+	* "ap-southeast-1"
+	* "ap-southeast-2"
+	* "ap-northeast-1"
+	* "sa-east-1"
 
 ``` javascript
 S3.config = {
@@ -137,14 +193,16 @@ S3.config = {
 };
 ```
 
-#### S3.stream
-This is the meteor stream that is created between the server and the S3.collection object on the client to relay information. You probably don't need access to this.
-
 #### S3.knox
 The current knox client.
 
+#### S3.aws
+The current aws-sdk client.
 
 #### Developer Notes
 http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/frames.html
 https://github.com/Differential/meteor-uploader/blob/master/lib/UploaderFile.coffee#L169-L178
 
+http://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-auth-using-authorization-header.html
+http://docs.aws.amazon.com/general/latest/gr/sigv4-signed-request-examples.html
+https://github.com/CulturalMe/meteor-slingshot/blob/master/services/aws-s3.js
