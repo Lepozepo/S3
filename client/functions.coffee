@@ -120,11 +120,13 @@
 										url:result.url
 										secure_url:result.secure_url
 										relative_url:result.relative_url
+
+								callback and callback null,S3.collection.findOne id
 							else
-								console.log "#{xhr.status} error"
+								callback and callback true,null
 
 						xhr.addEventListener "error", ->
-							console.log "#{xhr.status} error"
+							callback and callback true,null
 
 						xhr.addEventListener "abort", ->
 							console.log "aborted by user"

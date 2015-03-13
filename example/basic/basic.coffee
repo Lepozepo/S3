@@ -9,7 +9,7 @@ if Meteor.isClient
 				path:"tester"
 				(error,result) ->
 					if error
-						console.log error
+						console.log "Unable to upload"
 					else
 						console.log result
 

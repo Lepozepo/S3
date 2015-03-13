@@ -193,12 +193,11 @@ S3.config = {
 };
 ```
 
-#### S3.stream
-This is the meteor stream that is created between the server and the S3.collection object on the client to relay information. You probably don't need access to this.
-
 #### S3.knox
 The current knox client.
 
+#### S3.aws
+The current aws-sdk client.
 
 #### Developer Notes
 http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/frames.html
