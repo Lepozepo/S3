@@ -22,7 +22,7 @@
 		# ops.expiration [DEFAULT: 1800000 (30 mins)]
 			# How long before uploads to the file are disabled in ms
 		# ops.acl [DEFAULT: "public-read"]
-			# Access Control Lists. Describes who has access to the file. Any of these options:
+			# Access Control List. Describes who has access to the file. Any of these options:
 				# "private",
 				# "public-read",
 				# "public-read-write",

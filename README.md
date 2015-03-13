@@ -125,8 +125,30 @@ This is a null Meteor.Collection that exists only on the users client. After the
 This is the upload function that manages all the dramatic things you need to do for something so essentially simple.
 
 __Parameters:__
-*	__ops.files _[REQUIRED]_:__ Must be a FileList object. You can get this via jQuery via $("input[type='file']")[0].files
-*	__ops.path:__ Must be in this format ("folder/other_folder"). So basically never start with "/" and never end with "/".
+*	__ops.files [REQUIRED]:__ Must be a FileList object. You can get this via jQuery via $("input[type='file']")[0].files.
+*	__ops.path [DEFAULT: ""]:__ Must be in this format ("folder/other_folder"). So basically never start with "/" and never end with "/". Defaults to ROOT folder.
+*	__ops.unique_name [DEFAULT: true]:__ If set to true, the uploaded file name will be set to a uuid without changing the files' extension. If set to false, the uploaded file name will be set to the original name of the file.
+*	__ops.expiration [DEFAULT: 1800000 (30 mins)]:__ Defines how much time the file has before Amazon denies the upload. Must be in milliseconds. Defaults to 1800000 (30 minutes).
+*	__ops.uploader [DEFAULT: "default"]:__ Defines the name of the uploader. Useful for forms that use multiple uploaders.
+*	__ops.acl [DEFAULT: "public-read"]:__ Access Control List. Describes who has access to the file. Can only be one of the following options:
+	* "private"
+	* "public-read"
+	* "public-read-write"
+	* "authenticated-read"
+	* "bucket-owner-read"
+	* "bucket-owner-full-control"
+	* "log-delivery-write"
+	* __Support for signed GET is still pending so uploads that require authentication won't be easily reachable__
+*	__ops.bucket [DEFAULT: SERVER SETTINGS]:__ Overrides the bucket that will be used for the upload.
+*	__ops.region [DEFAULT: SERVER SETTINGS]:__ Overrides the region that will be used for the upload. Only accepts the following regions:
+	* "us-west-2"
+	* "us-west-1"
+	* "eu-west-1"
+	* "eu-central-1"
+	* "ap-southeast-1"
+	* "ap-southeast-2"
+	* "ap-northeast-1"
+	* "sa-east-1"
 *	__callback:__ A function that is run after the upload is complete returning an Error as the first parameter (if there is one), and a Result as the second.
 *	__Result:__ The returned value of the callback function if there is no error. It returns an object with these keys:
 	*	__loaded:__ Integer (bytes)
@@ -146,8 +168,22 @@ __Parameters:__
 
 ### S3 (SERVER SIDE)
 
-#### S3.config
-This is where you define your key, secret, and bucket.
+#### S3.config(ops)
+This is where you define your key, secret, bucket, and other account wide settings.
+
+__Parameters:__
+*	__ops.key [REQUIRED]:__ Your Amazon AWS Key.
+*	__ops.secret [REQUIRED]:__ Your Amazon AWS Secret.
+*	__ops.bucket [REQUIRED]:__ Your Amazon AWS S3 bucket.
+*	__ops.region [DEFAULT: "us-east-1"]:__ Your Amazon AWS S3 Region. Defaults to US Standard. Can be any of the following:
+	* "us-west-2"
+	* "us-west-1"
+	* "eu-west-1"
+	* "eu-central-1"
+	* "ap-southeast-1"
+	* "ap-southeast-2"
+	* "ap-northeast-1"
+	* "sa-east-1"
 
 ``` javascript
 S3.config = {
