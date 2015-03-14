@@ -24,7 +24,7 @@ insecure@1.0.2
 jquery@1.11.3
 json@1.0.2
 launch-screen@1.0.1
-lepozepo:s3@5.0.0
+lepozepo:s3@5.0.1
 livedata@1.0.12
 localstorage@1.0.2
 logging@1.0.6
