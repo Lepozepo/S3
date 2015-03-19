@@ -52,8 +52,15 @@
 			unique_name:true
 
 		_.each ops.files, (file) ->
-			if ops.unique_name
-				extension = _.last file.name.split(".")
+			if ops.encoding is "base64"
+				if _.isString file
+					file = S3.b64toBlob file
+
+			if ops.unique_name or ops.encoding is "base64"
+				extension = _.last file.name?.split(".")
+				if not extension
+					extension = file.type.split("/")[1] # a library of extensions based on MIME types would be better
+
 				file_name = "#{Meteor.uuid()}.#{extension}"
 			else
 				file_name = file.name
@@ -138,7 +145,30 @@
 	delete: (path,callback) ->
 		Meteor.call "_s3_delete", path, callback
 
+	b64toBlob: (b64Data, contentType, sliceSize) ->
+		data = b64Data.split("base64,")
+		if not contentType
+			contentType = data[0].replace("data:","").replace(";","")
 
+		contentType = contentType
+		sliceSize = sliceSize or 512
+
+		byteCharacters = atob data[1]
+		byteArrays = []
+
+		for offset in [0...byteCharacters.length] by sliceSize
+			slice = byteCharacters.slice offset, offset + sliceSize
+			byteNumbers = new Array slice.length
+
+			for i in [0...slice.length]
+				byteNumbers[i] = slice.charCodeAt(i)
+
+			byteArray = new Uint8Array byteNumbers
+
+			byteArrays.push byteArray
+
+		blob = new Blob(byteArrays, {type: contentType})
+		return blob
 
 
 

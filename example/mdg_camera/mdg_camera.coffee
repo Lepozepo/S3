@@ -6,7 +6,7 @@ if Meteor.isClient
 		"click button.upload": (event) ->
 			S3.upload
 				files:[$("textarea").val()]
-				path:"/tester"
+				path:"tester"
 				encoding:"base64"
 				(error,result) ->
 					if error
@@ -24,7 +24,7 @@ if Meteor.isClient
 if Meteor.isServer
 	S3.config =
 		key:"yourkey"
-		secret:"yoursecret"
+		secret:"yousecret"
 		bucket:"yourbucket"
 
 
