@@ -19,6 +19,8 @@
 			# the folder to upload to: blank string for root folder ""
 		# ops.unique_name [DEFAULT: true]
 			# modifies the file name to a unique string, if false takes the name of the file. Uploads will overwrite existing files instead.
+		# ops.encoding [OPTIONAL: only supports "base64"]
+			# overrides file encoding, only supports base64 right now
 		# ops.expiration [DEFAULT: 1800000 (30 mins)]
 			# How long before uploads to the file are disabled in ms
 		# ops.acl [DEFAULT: "public-read"]

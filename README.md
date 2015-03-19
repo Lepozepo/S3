@@ -128,6 +128,7 @@ __Parameters:__
 *	__ops.files [REQUIRED]:__ Must be a FileList object. You can get this via jQuery via $("input[type='file']")[0].files.
 *	__ops.path [DEFAULT: ""]:__ Must be in this format ("folder/other_folder"). So basically never start with "/" and never end with "/". Defaults to ROOT folder.
 *	__ops.unique_name [DEFAULT: true]:__ If set to true, the uploaded file name will be set to a uuid without changing the files' extension. If set to false, the uploaded file name will be set to the original name of the file.
+*	__ops.encoding [OPTIONAL: "base64"]:__ If set to "base64", the uploaded file will be uploaded as a base64 string. The uploader will enforce a unique_name if this option is set.
 *	__ops.expiration [DEFAULT: 1800000 (30 mins)]:__ Defines how much time the file has before Amazon denies the upload. Must be in milliseconds. Defaults to 1800000 (30 minutes).
 *	__ops.uploader [DEFAULT: "default"]:__ Defines the name of the uploader. Useful for forms that use multiple uploaders.
 *	__ops.acl [DEFAULT: "public-read"]:__ Access Control List. Describes who has access to the file. Can only be one of the following options:

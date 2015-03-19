@@ -1,7 +1,7 @@
 Package.describe({
 	name:"lepozepo:s3",
 	summary: "Upload files to S3. Allows use of Knox Server-Side.",
-	version:"5.0.1",
+	version:"5.1.0",
 	git:"https://github.com/Lepozepo/S3"
 });
 
