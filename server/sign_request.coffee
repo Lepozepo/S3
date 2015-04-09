@@ -41,9 +41,9 @@ Meteor.methods
 
 		# Identify post_url
 		if ops.region is "us-east-1" or ops.region is "us-standard"
-			post_url = "https://#{ops.bucket}.s3.amazonaws.com"
+			post_url = "https://s3.amazonaws.com/#{ops.bucket}"
 		else
-			post_url = "https://#{ops.bucket}.s3-#{ops.region}.amazonaws.com"
+			post_url = "https://s3-#{ops.region}.amazonaws.com/#{ops.bucket}"
 
 		# Return results
 		policy:policy
