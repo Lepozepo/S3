@@ -165,7 +165,7 @@ This function permanently destroys a file located in your S3 bucket. It still ne
 
 __Parameters:__
 *	__path:__ Must be in this format ("/folder/other_folder/file.extension"). So basically always start with "/" and never end with "/". This is required.
-*	__callback:__ A function that is run after the upload is complete returning an Error as the first parameter (if there is one), and a Result as the second.
+*	__callback:__ A function that is run after the delete operation is complete returning an Error as the first parameter (if there is one), and a Result as the second.
 
 ### S3 (SERVER SIDE)
 
