@@ -7,6 +7,12 @@ If you want to keep using the version of this package that uses server resources
 
 **S3 now uploads directly from the client to Amazon. Client files will not touch your server.**
 
+# Show your support!
+Star my code in github or atmosphere if you like my code or shoot me a dollar or two!
+
+[DONATE HERE](https://cash.me/$lepozepo)
+
+
 ## Migrating from 4.1.3 to 5.x.x
 * S3.upload path parameter: "" is now root instead of "/".
 * Methods:
