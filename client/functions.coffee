@@ -143,6 +143,8 @@
 						xhr.open "POST",result.post_url,true
 
 						xhr.send form_data
+					else
+						callback and callback error,null
 
 	delete: (path,callback) ->
 		Meteor.call "_s3_delete", path, callback

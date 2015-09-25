@@ -27,6 +27,10 @@ Star my code in github or atmosphere if you like my code or shoot me a dollar or
 $ meteor add lepozepo:s3
 ```
 
+## Upcoming Feature
+V4 signature
+
+
 ## How to use
 
 ### Step 1

@@ -15,6 +15,7 @@ Package.on_use(function (api) {
 	api.versionsFrom('METEOR@1.0');
 
 	api.use(["underscore","check","coffeescript","service-configuration"], ["client", "server"]);
+	api.use(["check"], ["client", "server"],{weak:true});
 
 	// Client
 	api.add_files("client/functions.coffee", "client");
