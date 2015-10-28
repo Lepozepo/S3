@@ -186,6 +186,7 @@ __Parameters:__
 *	__ops.key [REQUIRED]:__ Your Amazon AWS Key.
 *	__ops.secret [REQUIRED]:__ Your Amazon AWS Secret.
 *	__ops.bucket [REQUIRED]:__ Your Amazon AWS S3 bucket.
+*	__ops.denyDelete [DEFAULT: undefined]:__ If set to true, will block delete calls. This is to enable secure deployment of this package before a more granular permissions system is developed.
 *	__ops.region [DEFAULT: "us-east-1"]:__ Your Amazon AWS S3 Region. Defaults to US Standard. Can be any of the following:
 	* "us-west-2"
 	* "us-west-1"
