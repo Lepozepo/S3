@@ -1,0 +1,20 @@
+<head>
+  <title>basic</title>
+</head>
+
+<body>
+  {{> basic}}
+</body>
+
+<template name="basic">
+
+	<input type="file" class="file_bag" multiple>
+	<button class="upload">upload it</button>
+
+	{{#each files}}
+		<p>{{percent_uploaded}}</p>
+		<img src="{{secure_url}}" height="250px">
+		<button class="delete">Delete</button>
+	{{/each}}
+
+</template>
