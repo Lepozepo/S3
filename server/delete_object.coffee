@@ -3,8 +3,7 @@ Future = Npm.require 'fibers/future'
 Meteor.methods
 	_s3_delete: (path) ->
 		@unblock()
-		if check
-			check path,String
+		check path,String
 
 		future = new Future()
 

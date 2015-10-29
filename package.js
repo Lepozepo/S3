@@ -1,7 +1,7 @@
 Package.describe({
 	name:"lepozepo:s3",
 	summary: "Upload files to S3. Allows use of Knox Server-Side.",
-	version:"5.1.3",
+	version:"5.1.4",
 	git:"https://github.com/Lepozepo/S3"
 });
 
@@ -14,8 +14,8 @@ Npm.depends({
 Package.on_use(function (api) {
 	api.versionsFrom('METEOR@1.0');
 
-	api.use(["underscore","check","coffeescript","service-configuration"], ["client", "server"]);
-	api.use(["check"], ["client", "server"],{weak:true});
+	api.use(["meteor-base","coffeescript","service-configuration"], ["client", "server"]);
+	api.use(["check","random"], ["client","server"]);
 
 	// Client
 	api.add_files("client/functions.coffee", "client");
