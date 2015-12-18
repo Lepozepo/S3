@@ -68,12 +68,8 @@ Meteor.methods
 		file_type:ops.file_type
 		file_name:ops.file_name
 
-
 crypto = Npm.require("crypto")
 calculate_signature = (policy) ->
 	crypto.createHmac("sha1", S3.config.secret)
 		.update(new Buffer(policy, "utf-8"))
 		.digest("base64")
-
-
-
