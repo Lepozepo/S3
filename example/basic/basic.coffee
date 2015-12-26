@@ -6,7 +6,6 @@ if Meteor.isClient
 		"click button.upload": (event) ->
 			S3.upload
 				files:$("input.file_bag")[0].files
-				path:"tester"
 				(error,result) ->
 					if error
 						console.log "Unable to upload"
