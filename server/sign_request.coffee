@@ -29,7 +29,10 @@ Meteor.methods
 		expiration = new Date Date.now() + ops.expiration
 		expiration = expiration.toISOString()
 
-		key = "#{ops.path}/#{ops.file_name}"
+		if _.isEmpty ops.path
+			key = "#{ops.file_name}"
+		else
+			key = "#{ops.path}/#{ops.file_name}"
 
 		policy =
 			"expiration":expiration
