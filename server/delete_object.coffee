@@ -14,10 +14,10 @@ Meteor.methods
 			future.return e
 
 		else
-			console.log 'deleting'
+			# console.log 'deleting'
 			S3.knox.deleteFile path, (e,r) ->
 				if e
-					console.log e
+					# console.log e
 					future.return e
 				else
 					future.return true
