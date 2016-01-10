@@ -1,4 +1,5 @@
 @S3 =
+	runningRequests: {}
 	collection: new Meteor.Collection(null)
 		# file.name
 		# file.type
@@ -7,7 +8,7 @@
 		# total
 		# percent_uploaded
 		# uploader
-		# status: ["signing","uploading","complete"]
+		# status: ["signing","uploading","complete","canceled"]
 		# url
 		# secure_url
 		# relative_url
@@ -110,6 +111,7 @@
 
 						# Send data
 						xhr = new XMLHttpRequest()
+						S3.runningRequests[id] = xhr
 
 						xhr.upload.addEventListener "progress", (event) ->
 								S3.collection.update id,
@@ -121,6 +123,7 @@
 							,false
 
 						xhr.addEventListener "load", ->
+							delete S3.runningRequests[id]
 							if xhr.status < 400
 								S3.collection.update id,
 									$set:
@@ -135,9 +138,11 @@
 								callback and callback true,null
 
 						xhr.addEventListener "error", ->
+							delete S3.runningRequests[id]
 							callback and callback true,null
 
 						xhr.addEventListener "abort", ->
+							delete S3.runningRequests[id]
 							console.log "aborted by user"
 
 						xhr.open "POST",result.post_url,true
@@ -148,6 +153,11 @@
 
 	delete: (path,callback) ->
 		Meteor.call "_s3_delete", path, callback
+
+	cancel: (id) ->
+		if S3.runningRequests[id]
+			S3.runningRequests[id].abort()
+			S3.collection.update(id, {status: 'canceled'});
 
 	b64toBlob: (b64Data, contentType, sliceSize) ->
 		data = b64Data.split("base64,")
