@@ -8,7 +8,7 @@
 		# total
 		# percent_uploaded
 		# uploader
-		# status: ["signing","uploading","complete"]
+		# status: ["signing","uploading","complete","canceled"]
 		# url
 		# secure_url
 		# relative_url
@@ -157,7 +157,7 @@
 	cancel: (id) ->
 		if S3.runningRequests[id]
 			S3.runningRequests[id].abort()
-			S3.collection.remove(id);
+			S3.collection.update(id, {status: 'canceled'});
 
 	b64toBlob: (b64Data, contentType, sliceSize) ->
 		data = b64Data.split("base64,")
