@@ -81,6 +81,7 @@
 				status:"signing"
 
 			id = S3.collection.insert initial_file_data
+			xhrId = ops.xhrId || id
 
 			Meteor.call "_s3_sign",
 				path:ops.path
@@ -111,7 +112,7 @@
 
 						# Send data
 						xhr = new XMLHttpRequest()
-						S3.runningRequests[id] = xhr
+						S3.runningRequests[xhrId] = { xhr: xhr, id: id }
 
 						xhr.upload.addEventListener "progress", (event) ->
 								S3.collection.update id,
@@ -123,7 +124,7 @@
 							,false
 
 						xhr.addEventListener "load", ->
-							delete S3.runningRequests[id]
+							delete S3.runningRequests[xhrId]
 							if xhr.status < 400
 								S3.collection.update id,
 									$set:
@@ -138,11 +139,11 @@
 								callback and callback true,null
 
 						xhr.addEventListener "error", ->
-							delete S3.runningRequests[id]
+							delete S3.runningRequests[xhrId]
 							callback and callback true,null
 
 						xhr.addEventListener "abort", ->
-							delete S3.runningRequests[id]
+							delete S3.runningRequests[xhrId]
 							console.log "aborted by user"
 
 						xhr.open "POST",result.post_url,true
@@ -154,10 +155,11 @@
 	delete: (path,callback) ->
 		Meteor.call "_s3_delete", path, callback
 
-	cancel: (id) ->
-		if S3.runningRequests[id]
-			S3.runningRequests[id].abort()
-			S3.collection.update(id, {status: 'canceled'});
+	cancel: (xhrId) ->
+		req = S3.runningRequests[xhrId]
+		if req
+			req.xhr.abort()
+			S3.collection.update(req.id, {status: 'canceled'});
 
 	b64toBlob: (b64Data, contentType, sliceSize) ->
 		data = b64Data.split("base64,")
