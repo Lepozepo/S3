@@ -40,7 +40,8 @@ Define your Amazon S3 credentials. SERVER SIDE.
 S3.config = {
 	key: 'amazonKey',
 	secret: 'amazonSecret',
-	bucket: 'bucketName'
+	bucket: 'bucketName',
+	region: 'eu-west-1' // Only needed if not "us-east-1" or "us-standard"
 };
 ```
 
@@ -83,46 +84,77 @@ Template.s3_tester.helpers({
 ```
 
 ## Create your Amazon S3
-For all of this to work you need to create an aws account. On their website navigate to S3 and create a bucket in region US Standard. Navigate to your bucket and on the top right side you'll see your account name. Click it and go to Security Credentials. Once you're in Security Credentials create a new access key under the Access Keys (Access Key ID and Secret Access Key) tab. This is the info you will use for the first step of this plug. Go back to your bucket and select the properties OF THE BUCKET, not a file. Under Static Website Hosting you can Enable website hosting, to do that first upload a blank index.html file and then enable it. YOU'RE NOT DONE.
 
-You need to set permissions so that everyone can see what's in there. Under the Permissions tab click Edit CORS Configuration and paste this:
+For all of this to work you need to create an aws account.
 
-``` xml
-<?xml version="1.0" encoding="UTF-8"?>
-<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
-	<CORSRule>
-		<AllowedOrigin>*</AllowedOrigin>
-		<AllowedMethod>PUT</AllowedMethod>
-		<AllowedMethod>POST</AllowedMethod>
-		<AllowedMethod>GET</AllowedMethod>
-		<AllowedMethod>HEAD</AllowedMethod>
-		<MaxAgeSeconds>3000</MaxAgeSeconds>
-		<AllowedHeader>*</AllowedHeader>
-	</CORSRule>
-</CORSConfiguration>
-```
+### 1. Create an S3 bucket in your preferred region.
 
-Save it. Now click Edit bucket policy and paste this, REPLACE THE BUCKET NAME WITH YOUR OWN:
+### 2. Access Key Id and Secret Key
 
-``` javascript
-{
-	"Version": "2008-10-17",
-	"Statement": [
-		{
-			"Sid": "AllowPublicRead",
-			"Effect": "Allow",
-			"Principal": {
-				"AWS": "*"
-			},
-			"Action": "s3:GetObject",
-			"Resource": "arn:aws:s3:::YOURBUCKETNAMEHERE/*"
-		}
-	]
-}
-```
+1. Navigate to your bucket
+2. On the top right side you'll see your account name. Click it and go to Security Credentials.
+2. Create a new access key under the Access Keys (Access Key ID and Secret Access Key) tab.
+3. Enter this information into your app as defined in "How to Use" "Step 1".
+4. Your region can be found under "Properties" button and "Static Website Hosting" tab. 
+	* bucketName.s3-website-**eu-west-1**.amazonaws.com.
+	* If your region is "us-east-1" or "us-standard" then you don't need to specify this in the config.
+
+### 3. Hosting
+
+1. Go back to your bucket and select the "Properties" OF THE BUCKET, not a file.
+2. Go to the "Static Website Hosting" tab.
+2. Upload a blank index.html file and write it's path in the textfield.
+3. Enable website hosting.
+4. **Click "Save"**
+
+### 4. CORS
+
+You need to set permissions so that everyone can see what's in there.
+
+1. In the "Properties" go to the "Permissions" tab.
+2. Click "Edit CORS Configuration" and paste this:
+
+	``` xml
+	<?xml version="1.0" encoding="UTF-8"?>
+	<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+		<CORSRule>
+			<AllowedOrigin>*</AllowedOrigin>
+			<AllowedMethod>PUT</AllowedMethod>
+			<AllowedMethod>POST</AllowedMethod>
+			<AllowedMethod>GET</AllowedMethod>
+			<AllowedMethod>HEAD</AllowedMethod>
+			<MaxAgeSeconds>3000</MaxAgeSeconds>
+			<AllowedHeader>*</AllowedHeader>
+		</CORSRule>
+	</CORSConfiguration>
+	```
+
+5. Click "Edit bucket policy" and paste this (**Replace the bucket name with your own**):
+
+	``` javascript
+	{
+		"Version": "2008-10-17",
+		"Statement": [
+			{
+				"Sid": "AllowPublicRead",
+				"Effect": "Allow",
+				"Principal": {
+					"AWS": "*"
+				},
+				"Action": "s3:GetObject",
+				"Resource": "arn:aws:s3:::YOURBUCKETNAMEHERE/*"
+			}
+		]
+	}
+	```
+
+7. **Click Save**
+
+### Note
+
+It might take a couple of hours before you can actually start uploading to S3. Amazon takes some time to make things work.
 
 Enjoy, this took me a long time to figure out and I'm sharing it so that nobody has to go through all that.
-__NOTE:__ It might take a couple of hours before you can actually start uploading to S3. Amazon takes some time to make things work.
 
 ## API
 
