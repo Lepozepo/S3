@@ -46,6 +46,7 @@
 				# "sa-east-1"
 		# ops.uploader [DEFAULT: "default"]
 			# key to differentiate multiple uploaders on the same form
+		# ops.xrhId [DEFAULT: the id of the document that will be created]
 
 		_.defaults ops,
 			expiration:1800000
@@ -151,6 +152,7 @@
 						xhr.send form_data
 					else
 						callback and callback error,null
+			return id
 
 	delete: (path,callback) ->
 		Meteor.call "_s3_delete", path, callback

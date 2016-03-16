@@ -82,6 +82,27 @@ Template.s3_tester.helpers({
 })
 ```
 
+### Cancel request
+Cancel an upload
+``` javascript
+var id = S3.upload({
+	...
+});
+...
+S3.cancel(id);
+```
+or
+
+``` javascript
+S3.upload({
+	xhrId: someId,
+	...
+});
+...
+S3.cancel(someId);
+```
+
+
 ## Create your Amazon S3
 For all of this to work you need to create an aws account. On their website navigate to S3 and create a bucket in region US Standard. Navigate to your bucket and on the top right side you'll see your account name. Click it and go to Security Credentials. Once you're in Security Credentials create a new access key under the Access Keys (Access Key ID and Secret Access Key) tab. This is the info you will use for the first step of this plug. Go back to your bucket and select the properties OF THE BUCKET, not a file. Under Static Website Hosting you can Enable website hosting, to do that first upload a blank index.html file and then enable it. YOU'RE NOT DONE.
 
@@ -160,6 +181,7 @@ __Parameters:__
 	* "ap-southeast-2"
 	* "ap-northeast-1"
 	* "sa-east-1"
+* __ops.xrhId [DEFAULT: the id of the document that will be created]:__ an id to keep track of the http request to make it cancelable
 *	__callback:__ A function that is run after the upload is complete returning an Error as the first parameter (if there is one), and a Result as the second.
 *	__Result:__ The returned value of the callback function if there is no error. It returns an object with these keys:
 	*	__loaded:__ Integer (bytes)
