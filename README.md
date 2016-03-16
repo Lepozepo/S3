@@ -71,7 +71,10 @@ Template.s3_tester.events({
 				path:"subfolder"
 			},function(e,r){
 				console.log(r);
-		});
+			},function(progress){
+				console.log(progress, '%percent uploaded');
+			}
+		);
 	}
 })
 
@@ -169,6 +172,7 @@ __Parameters:__
 	*	__url:__ String (S3 hosted URL)
 	*	__secure_url:__ String (S3 hosted URL for https)
 	*	__relative_url:__ String (S3 URL for delete operations, this is what you should save in your DB to control delete)
+* __progressCallback:__ A function to be called everytime there's an update on the upload progress. It will be called with the percentage og byte uploaded.
 
 #### S3.delete(path,callback)
 This function permanently destroys a file located in your S3 bucket. It still needs more work for security in the form of allow/deny rules.

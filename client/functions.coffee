@@ -12,7 +12,7 @@
 		# secure_url
 		# relative_url
 
-	upload: (ops = {},callback) ->
+	upload: (ops = {},callback, progressCb) ->
 		# ops.files [REQUIRED]
 			# each needs to run file.type, store in a variable, then send
 		# ops.path [DEFAULT: ""]
@@ -118,6 +118,9 @@
 										loaded:event.loaded
 										total:event.total
 										percent_uploaded: Math.floor ((event.loaded / event.total) * 100)
+
+								if progressCb
+									progressCb (event.loaded / event.total) * 100
 							,false
 
 						xhr.addEventListener "load", ->
