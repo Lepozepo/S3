@@ -203,7 +203,7 @@ __Parameters:__
 	*	__relative_url:__ String (S3 URL for delete operations, this is what you should save in your DB to control delete)
 
 #### S3.delete(path,callback)
-This function permanently destroys a file located in your S3 bucket. It still needs more work for security in the form of allow/deny rules.
+This function permanently destroys a file located in your S3 bucket.
 
 __Parameters:__
 *	__path:__ Must be in this format ("/folder/other_folder/file.extension"). So basically always start with "/" and never end with "/". This is required.
@@ -236,6 +236,10 @@ S3.config = {
 	bucket: 'bucketName'
 };
 ```
+
+#### S3.rules
+##### S3.rules.delete
+This is a function that runs every time someone uses the delete function on the client side. The context of `this` for the function has access to the `path` and `this` from a Meteor.method.
 
 #### S3.knox
 The current knox client.
