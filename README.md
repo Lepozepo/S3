@@ -163,6 +163,7 @@ __Parameters:__
 	* "ap-southeast-2"
 	* "ap-northeast-1"
 	* "sa-east-1"
+* __ops.progressCallback:__ A function to be called everytime there's an update on the upload progress. It will be called with the percentage og byte uploaded.
 *	__callback:__ A function that is run after the upload is complete returning an Error as the first parameter (if there is one), and a Result as the second.
 *	__Result:__ The returned value of the callback function if there is no error. It returns an object with these keys:
 	*	__loaded:__ Integer (bytes)
@@ -172,7 +173,7 @@ __Parameters:__
 	*	__url:__ String (S3 hosted URL)
 	*	__secure_url:__ String (S3 hosted URL for https)
 	*	__relative_url:__ String (S3 URL for delete operations, this is what you should save in your DB to control delete)
-* __progressCallback:__ A function to be called everytime there's an update on the upload progress. It will be called with the percentage og byte uploaded.
+
 
 #### S3.delete(path,callback)
 This function permanently destroys a file located in your S3 bucket. It still needs more work for security in the form of allow/deny rules.

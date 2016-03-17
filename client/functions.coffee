@@ -12,7 +12,7 @@
 		# secure_url
 		# relative_url
 
-	upload: (ops = {},callback, progressCb) ->
+	upload: (ops = {},callback) ->
 		# ops.files [REQUIRED]
 			# each needs to run file.type, store in a variable, then send
 		# ops.path [DEFAULT: ""]
@@ -45,6 +45,7 @@
 				# "sa-east-1"
 		# ops.uploader [DEFAULT: "default"]
 			# key to differentiate multiple uploaders on the same form
+		# ops.progressCallback [DEFAULT: null]
 
 		_.defaults ops,
 			expiration:1800000
@@ -119,8 +120,8 @@
 										total:event.total
 										percent_uploaded: Math.floor ((event.loaded / event.total) * 100)
 
-								if progressCb
-									progressCb (event.loaded / event.total) * 100
+								if ops.progressCallback
+									ops.progressCallback (event.loaded / event.total) * 100
 							,false
 
 						xhr.addEventListener "load", ->
