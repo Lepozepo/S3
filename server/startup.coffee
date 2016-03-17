@@ -7,6 +7,7 @@ AWS = Npm.require "aws-sdk"
 	config:{}
 	knox:{}
 	aws:{}
+	rules:{}
 
 Meteor.startup ->
 	if not _.has S3.config,"key"

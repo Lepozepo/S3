@@ -7,19 +7,18 @@ Meteor.methods
 
 		future = new Future()
 
-		if S3.config.denyDelete
-			errorMessage = 'S3.denyDelete is true, so delete was blocked.'
-			console.log errorMessage
-			e = new Error(errorMessage)
-			future.return e
+		if S3.rules?.delete
+			delete_context = _.extend this,
+				s3_delete_path:path
 
-		else
-			# console.log 'deleting'
-			S3.knox.deleteFile path, (e,r) ->
-				if e
-					# console.log e
-					future.return e
-				else
-					future.return true
+			auth_function = _.bind S3.rules.delete,delete_context
+			if not auth_function()
+				throw new Meteor.Error "Unauthorized", "Delete not allowed"
+
+		S3.knox.deleteFile path, (e,r) ->
+			if e
+				future.return e
+			else
+				future.return true
 
 		future.wait()
