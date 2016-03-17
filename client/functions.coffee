@@ -83,6 +83,9 @@
 
 			id = S3.collection.insert initial_file_data
 			xhrId = ops.xhrId || id
+			S3.collection.update id,
+				$set:
+					xhrId: xhrId
 
 			Meteor.call "_s3_sign",
 				path:ops.path
@@ -157,7 +160,8 @@
 	delete: (path,callback) ->
 		Meteor.call "_s3_delete", path, callback
 
-	cancel: (xhrId) ->
+	cancel: (ops) ->
+		xhrId = ops.xhrId || S3.collection.findOne(ops.id).xhrId
 		req = S3.runningRequests[xhrId]
 		if req
 			req.xhr.abort()

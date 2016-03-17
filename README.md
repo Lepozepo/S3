@@ -89,7 +89,7 @@ var id = S3.upload({
 	...
 });
 ...
-S3.cancel(id);
+S3.cancel({id: id});
 ```
 or
 
@@ -99,7 +99,18 @@ S3.upload({
 	...
 });
 ...
-S3.cancel(someId);
+S3.cancel({xhrId: someId});
+```
+```
+or
+
+``` javascript
+var id = S3.upload({
+	xhrId: someId,
+	...
+});
+...
+S3.cancel({id: id});
 ```
 
 
