@@ -45,6 +45,7 @@
 				# "sa-east-1"
 		# ops.uploader [DEFAULT: "default"]
 			# key to differentiate multiple uploaders on the same form
+		# ops.progressCallback [DEFAULT: null]
 
 		_.defaults ops,
 			expiration:1800000
@@ -118,6 +119,9 @@
 										loaded:event.loaded
 										total:event.total
 										percent_uploaded: Math.floor ((event.loaded / event.total) * 100)
+
+								if ops.progressCallback
+									ops.progressCallback (event.loaded / event.total) * 100
 							,false
 
 						xhr.addEventListener "load", ->
