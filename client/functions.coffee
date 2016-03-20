@@ -129,7 +129,7 @@
 										url:result.url
 										secure_url:result.secure_url
 										relative_url:result.relative_url
-
+										object_key: result.key		
 								callback and callback null,S3.collection.findOne id
 							else
 								callback and callback true,null
@@ -173,8 +173,3 @@
 
 		blob = new Blob(byteArrays, {type: contentType})
 		return blob
-
-
-
-
-

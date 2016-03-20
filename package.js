@@ -23,6 +23,7 @@ Package.on_use(function (api) {
 	// Server
 	api.add_files("server/startup.coffee", "server");
 	api.add_files("server/sign_request.coffee", "server");
+	api.add_files("server/get_signed_url.coffee", "server");
 	api.add_files("server/delete_object.coffee", "server");
 
 	//Allows user access to Knox
