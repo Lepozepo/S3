@@ -55,7 +55,7 @@
 			uploader:"default"
 			unique_name:true
 
-		_.each ops.files, (file) ->
+		return _.map ops.files, (file) ->
 			if ops.encoding is "base64"
 				if _.isString file
 					file = S3.b64toBlob file
