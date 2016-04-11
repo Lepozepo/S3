@@ -83,6 +83,38 @@ Template.s3_tester.helpers({
 })
 ```
 
+### Cancel request
+Cancel an upload
+``` javascript
+var id = S3.upload({
+	...
+});
+...
+S3.cancel({id: id});
+```
+or
+
+``` javascript
+S3.upload({
+	xhrId: someId,
+	...
+});
+...
+S3.cancel({xhrId: someId});
+```
+```
+or
+
+``` javascript
+var id = S3.upload({
+	xhrId: someId,
+	...
+});
+...
+S3.cancel({id: id});
+```
+
+
 ## Create your Amazon S3
 
 For all of this to work you need to create an aws account.
@@ -192,6 +224,7 @@ __Parameters:__
 	* "ap-southeast-2"
 	* "ap-northeast-1"
 	* "sa-east-1"
+* __ops.xrhId [DEFAULT: the id of the document that will be created]:__ an id to keep track of the http request to make it cancelable
 *	__callback:__ A function that is run after the upload is complete returning an Error as the first parameter (if there is one), and a Result as the second.
 *	__Result:__ The returned value of the callback function if there is no error. It returns an object with these keys:
 	*	__loaded:__ Integer (bytes)
