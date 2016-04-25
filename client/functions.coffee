@@ -13,8 +13,10 @@
 		# relative_url
 
 	upload: (ops = {},callback) ->
-		# ops.files [REQUIRED]
-			# each needs to run file.type, store in a variable, then send
+		# ops.files [OPTIONAL]
+			# each needs to run file.type, store in a variable, then send. Either files or ops.file must be provided.
+		# ops.file [OPTIONAL]
+			# single file upload of javascript type File
 		# ops.path [DEFAULT: ""]
 			# the folder to upload to: blank string for root folder ""
 		# ops.unique_name [DEFAULT: true]
@@ -53,98 +55,11 @@
 			uploader:"default"
 			unique_name:true
 
-		_.each ops.files, (file) ->
-			if ops.encoding is "base64"
-				if _.isString file
-					file = S3.b64toBlob file
-
-			if ops.unique_name or ops.encoding is "base64"
-				extension = _.last file.name?.split(".")
-				if not extension
-					extension = file.type.split("/")[1] # a library of extensions based on MIME types would be better
-
-				file_name = "#{Meteor.uuid()}.#{extension}"
-			else
-				file_name = file.name
-
-			initial_file_data =
-				file:
-					name:file_name
-					type:file.type
-					size:file.size
-					original_name:file.name
-				loaded:0
-				total:file.size
-				percent_uploaded:0
-				uploader:ops.uploader
-				status:"signing"
-
-			id = S3.collection.insert initial_file_data
-
-			Meteor.call "_s3_sign",
-				path:ops.path
-				file_name: initial_file_data.file.name
-				file_type:file.type
-				file_size:file.size
-				acl:ops.acl
-				bucket:ops.bucket
-				expiration:ops.expiration
-				(error,result) ->
-					if result
-						# Mark as signed
-						S3.collection.update id,
-							$set:
-								status:"uploading"
-
-						# Prepare data
-						form_data = new FormData()
-						form_data.append "key", result.key
-						form_data.append "AWSAccessKeyId",result.access_key
-						form_data.append "bucket",result.bucket
-						form_data.append "Content-Type",result.file_type
-						form_data.append "acl", result.acl
-						form_data.append "Content-Disposition","inline; filename='#{result.file_name}'"
-						form_data.append "policy",result.policy
-						form_data.append "signature",result.signature
-						form_data.append "file",file
-
-						# Send data
-						xhr = new XMLHttpRequest()
-
-						xhr.upload.addEventListener "progress", (event) ->
-								S3.collection.update id,
-									$set:
-										status:"uploading"
-										loaded:event.loaded
-										total:event.total
-										percent_uploaded: Math.floor ((event.loaded / event.total) * 100)
-							,false
-
-						xhr.addEventListener "load", ->
-							if xhr.status < 400
-								S3.collection.update id,
-									$set:
-										status:"complete"
-										percent_uploaded: 100
-										url:result.url
-										secure_url:result.secure_url
-										relative_url:result.relative_url
-
-								callback and callback null,S3.collection.findOne id
-							else
-								callback and callback true,null
-
-						xhr.addEventListener "error", ->
-							callback and callback true,null
-
-						xhr.addEventListener "abort", ->
-							console.log "aborted by user"
-
-						xhr.open "POST",result.post_url,true
-
-						xhr.send form_data
-					else
-						callback and callback error,null
+		if ops.file
+			uploadFile(ops.file, ops, callback)
+		else
+			_.each ops.files, (file) ->
+				uploadFile(file, ops, callback)
 
 	delete: (path,callback) ->
 		Meteor.call "_s3_delete", path, callback
@@ -174,7 +89,95 @@
 		blob = new Blob(byteArrays, {type: contentType})
 		return blob
 
+uploadFile = (file, ops, callback) ->
+	if ops.encoding is "base64"
+		if _.isString file
+			file = S3.b64toBlob file
 
+	if ops.unique_name or ops.encoding is "base64"
+		extension = _.last file.name?.split(".")
+		if not extension
+			extension = file.type.split("/")[1] # a library of extensions based on MIME types would be better
 
+		file_name = "#{Meteor.uuid()}.#{extension}"
+	else
+		file_name = file.name
 
+	initial_file_data =
+		file:
+			name:file_name
+			type:file.type
+			size:file.size
+			original_name:file.name
+		loaded:0
+		total:file.size
+		percent_uploaded:0
+		uploader:ops.uploader
+		status:"signing"
 
+	id = S3.collection.insert initial_file_data
+
+	Meteor.call "_s3_sign",
+		path:ops.path
+		file_name: initial_file_data.file.name
+		file_type:file.type
+		file_size:file.size
+		acl:ops.acl
+		bucket:ops.bucket
+		expiration:ops.expiration
+		(error,result) ->
+			if result
+				# Mark as signed
+				S3.collection.update id,
+					$set:
+						status:"uploading"
+
+				# Prepare data
+				form_data = new FormData()
+				form_data.append "key", result.key
+				form_data.append "AWSAccessKeyId",result.access_key
+				form_data.append "bucket",result.bucket
+				form_data.append "Content-Type",result.file_type
+				form_data.append "acl", result.acl
+				form_data.append "Content-Disposition","inline; filename='#{result.file_name}'"
+				form_data.append "policy",result.policy
+				form_data.append "signature",result.signature
+				form_data.append "file",file
+
+				# Send data
+				xhr = new XMLHttpRequest()
+
+				xhr.upload.addEventListener "progress", (event) ->
+						S3.collection.update id,
+							$set:
+								status:"uploading"
+								loaded:event.loaded
+								total:event.total
+								percent_uploaded: Math.floor ((event.loaded / event.total) * 100)
+					,false
+
+				xhr.addEventListener "load", ->
+					if xhr.status < 400
+						S3.collection.update id,
+							$set:
+								status:"complete"
+								percent_uploaded: 100
+								url:result.url
+								secure_url:result.secure_url
+								relative_url:result.relative_url
+
+						callback and callback null,S3.collection.findOne id
+					else
+						callback and callback true,null
+
+				xhr.addEventListener "error", ->
+					callback and callback true,null
+
+				xhr.addEventListener "abort", ->
+					console.log "aborted by user"
+
+				xhr.open "POST",result.post_url,true
+
+				xhr.send form_data
+			else
+				callback and callback error,null

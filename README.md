@@ -95,7 +95,7 @@ For all of this to work you need to create an aws account.
 2. On the top right side you'll see your account name. Click it and go to Security Credentials.
 2. Create a new access key under the Access Keys (Access Key ID and Secret Access Key) tab.
 3. Enter this information into your app as defined in "How to Use" "Step 1".
-4. Your region can be found under "Properties" button and "Static Website Hosting" tab. 
+4. Your region can be found under "Properties" button and "Static Website Hosting" tab.
 	* bucketName.s3-website-**eu-west-1**.amazonaws.com.
 	* If your region is "us-east-1" or "us-standard" then you don't need to specify this in the config.
 
@@ -167,7 +167,8 @@ This is a null Meteor.Collection that exists only on the users client. After the
 This is the upload function that manages all the dramatic things you need to do for something so essentially simple.
 
 __Parameters:__
-*	__ops.files [REQUIRED]:__ Must be a FileList object. You can get this via jQuery via $("input[type='file']")[0].files.
+*	__ops.file [OPTIONAL]:__ Must be a File object. You can create this via ```new File()```.  Either this otpion or 'files' just be provided.
+*	__ops.files [OPTIONAL]:__ Must be a FileList object. You can get this via jQuery via $("input[type='file']")[0].files.
 *	__ops.path [DEFAULT: ""]:__ Must be in this format ("folder/other_folder"). So basically never start with "/" and never end with "/". Defaults to ROOT folder.
 *	__ops.unique_name [DEFAULT: true]:__ If set to true, the uploaded file name will be set to a uuid without changing the files' extension. If set to false, the uploaded file name will be set to the original name of the file.
 *	__ops.encoding [OPTIONAL: "base64"]:__ If set to "base64", the uploaded file will be uploaded as a base64 string. The uploader will enforce a unique_name if this option is set.
