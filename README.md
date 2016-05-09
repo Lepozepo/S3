@@ -193,6 +193,14 @@ __Parameters:__
 	* "ap-southeast-2"
 	* "ap-northeast-1"
 	* "sa-east-1"
+	* __file.upload_name [OPTIONAL]:__ A function that returns the name with which you want to upload the file. It takes the file object as the only parameter. eg.
+		``` javascript
+		// The following function simply replicates the default behavior.
+		function(f) {
+			var extension = f.type.split("/")[1];
+			return Meteor.uuid() + "." + extension;
+		}
+		```
 *	__callback:__ A function that is run after the upload is complete returning an Error as the first parameter (if there is one), and a Result as the second.
 *	__Result:__ The returned value of the callback function if there is no error. It returns an object with these keys:
 	*	__loaded:__ Integer (bytes)
