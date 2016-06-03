@@ -1,6 +1,10 @@
 #Get Knox and AWS libraries
 Knox = Npm.require "knox"
+
+processBrowser = process.browser
+process.browser = false
 AWS = Npm.require "aws-sdk"
+process.browser = processBrowser
 
 #Server side configuration variables
 @S3 =
