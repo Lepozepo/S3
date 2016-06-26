@@ -16,6 +16,9 @@
         }
       }
     },
+    "crypto-js": {
+      "version": "3.1.6"
+    },
     "knox": {
       "version": "0.9.2",
       "dependencies": {
@@ -58,6 +61,9 @@
           }
         }
       }
+    },
+    "moment": {
+      "version": "2.13.0"
     },
     "stream-buffers": {
       "version": "2.1.0"

@@ -8,7 +8,9 @@ Package.describe({
 Npm.depends({
 	knox: "0.9.2",
 	"stream-buffers":"2.1.0",
-	"aws-sdk":"2.1.14"
+	"aws-sdk":"2.1.14",
+	"crypto-js":"3.1.6",
+	"moment":"2.13.0"
 });
 
 Package.on_use(function (api) {

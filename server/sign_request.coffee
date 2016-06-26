@@ -34,6 +34,9 @@ Meteor.methods
 		else
 			key = "#{ops.path}/#{ops.file_name}"
 
+		meta_uuid = Meteor.uuid()
+		meta_date = "#{moment().format('YYYYMMDD')}T000000Z"
+		meta_credential = "#{S3.config.key}/#{moment().format('YYYYMMDD')}/#{ops.region}/s3/aws4_request"
 		policy =
 			"expiration":expiration
 			"conditions":[
@@ -42,14 +45,18 @@ Meteor.methods
 				{"bucket":ops.bucket}
 				{"Content-Type":ops.file_type}
 				{"acl":ops.acl}
-				{"Content-Disposition":"inline; filename='#{ops.file_name}'"}
+				# {"x-amz-server-side-encryption": "AES256"}
+				{"x-amz-algorithm": "AWS4-HMAC-SHA256"}
+				{"x-amz-credential": meta_credential}
+				{"x-amz-date": meta_date }
+				{"x-amz-meta-uuid": meta_uuid}
 			]
 
 		# Encode the policy
-		policy = Buffer(JSON.stringify(policy), "utf-8").toString("base64")
+		policy = new Buffer(JSON.stringify(policy), "utf-8").toString("base64")
 
 		# Sign the policy
-		signature = calculate_signature policy
+		signature = calculate_signature policy, ops.region
 
 		# Identify post_url
 		if ops.region is "us-east-1" or ops.region is "us-standard"
@@ -70,13 +77,23 @@ Meteor.methods
 		key:key
 		file_type:ops.file_type
 		file_name:ops.file_name
+		meta_uuid:meta_uuid
+		meta_date:meta_date
+		meta_credential:meta_credential
 
 
-crypto = Npm.require("crypto")
-calculate_signature = (policy) ->
-	crypto.createHmac("sha1", S3.config.secret)
-		.update(new Buffer(policy, "utf-8"))
-		.digest("base64")
+# crypto = Npm.require("crypto")
+Crypto = Npm.require "crypto-js"
+moment = Npm.require "moment"
+{HmacSHA256} = Crypto
 
+calculate_signature = (policy, region) ->
+	kDate = HmacSHA256(moment().format("YYYYMMDD"), "AWS4" + S3.config.secret);
+	kRegion = HmacSHA256(region, kDate);
+	kService = HmacSHA256("s3", kRegion);
+	signature_key = HmacSHA256("aws4_request", kService);
+
+	HmacSHA256 policy, signature_key
+		.toString Crypto.enc.Hex
 
 

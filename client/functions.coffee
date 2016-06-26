@@ -138,13 +138,18 @@ uploadFile = (file, ops, callback) ->
 				# Prepare data
 				form_data = new FormData()
 				form_data.append "key", result.key
-				form_data.append "AWSAccessKeyId",result.access_key
-				form_data.append "bucket",result.bucket
-				form_data.append "Content-Type",result.file_type
 				form_data.append "acl", result.acl
-				form_data.append "Content-Disposition","inline; filename='#{result.file_name}'"
-				form_data.append "policy",result.policy
-				form_data.append "signature",result.signature
+				form_data.append "Content-Type",result.file_type
+
+				form_data.append "X-Amz-Date", result.meta_date
+				# form_data.append "x-amz-server-side-encryption", "AES256"
+				form_data.append "x-amz-meta-uuid", result.meta_uuid
+				form_data.append "X-Amz-Algorithm", "AWS4-HMAC-SHA256"
+				form_data.append "X-Amz-Credential", result.meta_credential
+				form_data.append "X-Amz-Signature",result.signature
+
+				form_data.append "Policy",result.policy
+
 				form_data.append "file",file
 
 				# Send data
