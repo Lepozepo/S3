@@ -93,25 +93,26 @@ For all of this to work you need to create an aws account.
 
 1. Navigate to your bucket
 2. On the top right side you'll see your account name. Click it and go to Security Credentials.
-2. Create a new access key under the Access Keys (Access Key ID and Secret Access Key) tab.
-3. Enter this information into your app as defined in "How to Use" "Step 1".
-4. Your region can be found under "Properties" button and "Static Website Hosting" tab.
+3. Create a new access key under the Access Keys (Access Key ID and Secret Access Key) tab.
+4. Enter this information into your app as defined in "How to Use" "Step 1".
+5. Your region can be found under "Properties" button and "Static Website Hosting" tab.
 	* bucketName.s3-website-**eu-west-1**.amazonaws.com.
 	* If your region is "us-east-1" or "us-standard" then you don't need to specify this in the config.
 
 ### 3. Hosting
 
-1. Go back to your bucket and select the "Properties" OF THE BUCKET, not a file.
-2. Go to the "Static Website Hosting" tab.
-2. Upload a blank index.html file and write it's path in the textfield.
-3. Enable website hosting.
-4. **Click "Save"**
+1. Upload a blank `index.html` file (anywhere is ok, I put it in root).
+2. Select the bucket's properties by clicking on the bucket (from All Buckets) then the "Properties" button at the top right.
+3. Click **"Static Website Hosting"** tab.
+4. Click **Enable Website Hosting**.
+5. Fill the `Index Document` input with the path to your `index.html` without a trailing slash. E.g. `afolder/index.html`, `index.html`
+6. **Click "Save"**
 
 ### 4. CORS
 
 You need to set permissions so that everyone can see what's in there.
 
-1. In the "Properties" go to the "Permissions" tab.
+1. Select the bucket's properties and go to the "Permissions" tab.
 2. Click "Edit CORS Configuration" and paste this:
 
 	``` xml
