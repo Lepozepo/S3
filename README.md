@@ -13,23 +13,14 @@ Star my code in github or atmosphere if you like my code or shoot me a dollar or
 [DONATE HERE](https://cash.me/$lepozepo)
 
 
-## Migrating from 4.1.3 to 5.x.x
-* S3.upload path parameter: "" is now root instead of "/".
-* Methods:
-	* _S3upload, _S3_abort_mpu, _S3_multipart_upload, and _S3_multipart_close have been destroyed
-	* _S3delete has been renamed to _s3_delete
-* Infrastructure:
-	* Package no longer uses lepozepo:streams
+## NEW IN 5.2.1
+* AWS Signature V4!! This means more regions can use this package
 
 ## Installation
 
 ``` sh
 $ meteor add lepozepo:s3
 ```
-
-## Upcoming Feature
-V4 signature
-
 
 ## How to use
 
