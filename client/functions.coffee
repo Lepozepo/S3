@@ -54,6 +54,7 @@
 			acl:"public-read"
 			uploader:"default"
 			unique_name:true
+			connection:Meteor
 
 		if ops.file
 			uploadFile(ops.file, ops, callback)
@@ -61,8 +62,9 @@
 			_.each ops.files, (file) ->
 				uploadFile(file, ops, callback)
 
-	delete: (path,callback) ->
-		Meteor.call "_s3_delete", path, callback
+	delete: (path, callback, connection) ->
+		conn = if connection then connection else Meteor
+		conn.call "_s3_delete", path, callback
 
 	b64toBlob: (b64Data, contentType, sliceSize) ->
 		data = b64Data.split("base64,")
@@ -120,7 +122,7 @@ uploadFile = (file, ops, callback) ->
 
 	id = S3.collection.insert initial_file_data
 
-	Meteor.call "_s3_sign",
+	ops.connection.call "_s3_sign",
 		path:ops.path
 		file_name: initial_file_data.file.name
 		file_type:file.type
