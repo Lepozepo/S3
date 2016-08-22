@@ -101,8 +101,10 @@ uploadFile = (file, ops, callback) ->
 
 		file_name = "#{Meteor.uuid()}.#{extension}"
 	else
-		if file.upload_name
+		if _.isFunction(file.upload_name)
 			file_name = file.upload_name(file)
+		else if !_.isEmpty(file.upload_name)
+			file_name = file.upload_name
 		else
 			file_name = file.name
 
