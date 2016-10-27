@@ -129,6 +129,7 @@ uploadFile = (file, ops, callback) ->
 		file_size:file.size
 		acl:ops.acl
 		bucket:ops.bucket
+		region:ops.region
 		expiration:ops.expiration
 		(error,result) ->
 			if result
