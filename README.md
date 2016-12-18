@@ -12,6 +12,8 @@ Star my code in github or atmosphere if you like my code or shoot me a dollar or
 
 [DONATE HERE](https://cash.me/$lepozepo)
 
+## Moving Forward
+In line with Meteor's move towards NPM, I'm moving this package to NPM. Along with this move, I'll resolve issues with importing the uploader and making it easy to use in React and React Native. I've already started migrating but I'm only half way there, have a look at the repo [here](https://github.com/Lepozepo/S3-uploader)
 
 ## NEW IN 5.2.1
 * AWS Signature V4!! This means more regions can use this package
