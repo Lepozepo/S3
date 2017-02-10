@@ -8,6 +8,7 @@ Meteor.methods
 		# ops.file_size
 		# ops.acl
 		# ops.bucket
+		# ops.server_side_encryption
 
 		_.defaults ops,
 			expiration:1800000
@@ -15,6 +16,7 @@ Meteor.methods
 			bucket:S3.config.bucket
 			acl:"public-read"
 			region:S3.config.region
+			server_side_encryption:false
 
 		check ops,
 			expiration:Number
@@ -22,6 +24,7 @@ Meteor.methods
 			bucket:String
 			acl:String
 			region:String
+			server_side_encryption:Boolean
 			file_type:String
 			file_name:String
 			file_size:Number
@@ -45,12 +48,13 @@ Meteor.methods
 				{"bucket":ops.bucket}
 				{"Content-Type":ops.file_type}
 				{"acl":ops.acl}
-				# {"x-amz-server-side-encryption": "AES256"}
 				{"x-amz-algorithm": "AWS4-HMAC-SHA256"}
 				{"x-amz-credential": meta_credential}
 				{"x-amz-date": meta_date }
 				{"x-amz-meta-uuid": meta_uuid}
 			]
+		if ops.server_side_encryption
+			policy["conditions"].push({"x-amz-server-side-encryption": "AES256"})
 
 		# Encode the policy
 		policy = new Buffer(JSON.stringify(policy), "utf-8").toString("base64")
