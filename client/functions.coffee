@@ -23,6 +23,8 @@
 			# modifies the file name to a unique string, if false takes the name of the file. Uploads will overwrite existing files instead.
 		# ops.encoding [OPTIONAL: only supports "base64"]
 			# overrides file encoding, only supports base64 right now
+		# ops.server_side_encryption
+			# if true, use server side encryption
 		# ops.expiration [DEFAULT: 1800000 (30 mins)]
 			# How long before uploads to the file are disabled in ms
 		# ops.acl [DEFAULT: "public-read"]
@@ -133,6 +135,7 @@ uploadFile = (file, ops, callback) ->
 		bucket:ops.bucket
 		region:ops.region
 		expiration:ops.expiration
+		server_side_encryption:ops.server_side_encryption
 		(error,result) ->
 			if result
 				# Mark as signed
@@ -147,7 +150,8 @@ uploadFile = (file, ops, callback) ->
 				form_data.append "Content-Type",result.file_type
 
 				form_data.append "X-Amz-Date", result.meta_date
-				# form_data.append "x-amz-server-side-encryption", "AES256"
+				if ops.server_side_encryption
+					form_data.append "x-amz-server-side-encryption", "AES256"
 				form_data.append "x-amz-meta-uuid", result.meta_uuid
 				form_data.append "X-Amz-Algorithm", "AWS4-HMAC-SHA256"
 				form_data.append "X-Amz-Credential", result.meta_credential
