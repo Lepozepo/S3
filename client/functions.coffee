@@ -23,6 +23,8 @@
 			# modifies the file name to a unique string, if false takes the name of the file. Uploads will overwrite existing files instead.
 		# ops.encoding [OPTIONAL: only supports "base64"]
 			# overrides file encoding, only supports base64 right now
+		# ops.content_disposition
+			# overrides file disposition (inline or attachment)
 		# ops.server_side_encryption
 			# if true, use server side encryption
 		# ops.expiration [DEFAULT: 1800000 (30 mins)]
@@ -136,6 +138,7 @@ uploadFile = (file, ops, callback) ->
 		region:ops.region
 		expiration:ops.expiration
 		server_side_encryption:ops.server_side_encryption
+		content_dispostion:ops.content_dispostion
 		(error,result) ->
 			if result
 				# Mark as signed
@@ -147,8 +150,9 @@ uploadFile = (file, ops, callback) ->
 				form_data = new FormData()
 				form_data.append "key", result.key
 				form_data.append "acl", result.acl
-				form_data.append "Content-Type",result.file_type
-
+				form_data.append "Content-Type", result.file_type
+				if ops.content_dispostion
+					form_data.append "Content-Disposition", ops.content_dispostion
 				form_data.append "X-Amz-Date", result.meta_date
 				if ops.server_side_encryption
 					form_data.append "x-amz-server-side-encryption", "AES256"

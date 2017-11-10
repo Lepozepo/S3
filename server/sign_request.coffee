@@ -9,6 +9,7 @@ Meteor.methods
 		# ops.acl
 		# ops.bucket
 		# ops.server_side_encryption
+		# ops.content_dispostion
 
 		_.defaults ops,
 			expiration:1800000
@@ -28,6 +29,7 @@ Meteor.methods
 			file_type:String
 			file_name:String
 			file_size:Number
+			content_dispostion:String
 
 		expiration = new Date Date.now() + ops.expiration
 		expiration = expiration.toISOString()
@@ -53,6 +55,8 @@ Meteor.methods
 				{"x-amz-date": meta_date }
 				{"x-amz-meta-uuid": meta_uuid}
 			]
+		if ops.content_disposition
+			policy["conditions"].push({"Content-Disposition": ops.content_disposition})
 		if ops.server_side_encryption
 			policy["conditions"].push({"x-amz-server-side-encryption": "AES256"})
 
