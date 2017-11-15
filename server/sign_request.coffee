@@ -9,7 +9,7 @@ Meteor.methods
 		# ops.acl
 		# ops.bucket
 		# ops.server_side_encryption
-		# ops.content_dispostion
+		# ops.content_disposition
 
 		_.defaults ops,
 			expiration:1800000
@@ -18,6 +18,7 @@ Meteor.methods
 			acl:"public-read"
 			region:S3.config.region
 			server_side_encryption:false
+			content_disposition:"inline"
 
 		check ops,
 			expiration:Number
@@ -29,7 +30,7 @@ Meteor.methods
 			file_type:String
 			file_name:String
 			file_size:Number
-			content_dispostion:String
+			content_disposition:String
 
 		expiration = new Date Date.now() + ops.expiration
 		expiration = expiration.toISOString()
