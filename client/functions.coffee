@@ -59,6 +59,8 @@
 			uploader:"default"
 			unique_name:true
 			connection:Meteor
+			server_side_encryption:false
+			content_disposition:"inline"
 
 		if ops.file
 			uploadFile(ops.file, ops, callback)
