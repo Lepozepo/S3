@@ -107,7 +107,7 @@ uploadFile = (file, ops, callback) ->
 		if not extension
 			extension = file.type.split("/")[1] # a library of extensions based on MIME types would be better
 
-		file_name = "#{Meteor.uuid()}.#{extension}"
+		file_name = "#{Random.id()}.#{extension}"
 	else
 		if _.isFunction(file.upload_name)
 			file_name = file.upload_name(file)
