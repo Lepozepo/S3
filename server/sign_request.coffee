@@ -40,7 +40,7 @@ Meteor.methods
 		else
 			key = "#{ops.path}/#{ops.file_name}"
 
-		meta_uuid = Meteor.uuid()
+		meta_uuid = Random.id()
 		meta_date = "#{moment().format('YYYYMMDD')}T000000Z"
 		meta_credential = "#{S3.config.key}/#{moment().format('YYYYMMDD')}/#{ops.region}/s3/aws4_request"
 		policy =
